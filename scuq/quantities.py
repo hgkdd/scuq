@@ -1,3 +1,41 @@
+# Example for FFT on Quantities
+##In this section we show how to integrate SCUQ in NumPys fft module. 
+# Although we implemented most of NumPys ufuncs, we cannot use quantities 
+# directly in the fft module of NumPy. The reason for this drawback is 
+# the fft module being directly implemented in C requiring floating 
+# point ndarrays as input parameters. In compensation, we implemented 
+# the floating-point conversion functions of NumPy. Thus our type quantity 
+# can be converted to a floating-point number. In order to avoid an 
+# unwanted conversion, we require weak consistency checking be enabled 
+# to perform the conversion. 
+# In Line 5 we create an array of input data. These values are quantities 
+# and thus have a unit. To convert these values to float strict 
+# consistency checking has to be disabled as shown in Line 15. 
+# The converted array can be used as usual, however it lost the 
+# information about the unit. We suggest saving the default unit from 
+# the quantity before conversion takes place and reassign it to the result.
+# \example dft_example.py
+
+# This example shows the integration of SCUQ in NumPys linear algebra module
+# <tt>linalg</tt>. The functions of the module convert their arguments to 
+# floating point numbers; therefore, a direct integration of our quantities
+# type is not feasible. However we implemented floating-point conversion 
+# for quantities to solve this issue.
+# If a quantity or an ndarray of quantities is an argument of functions 
+# like <tt>linalg.inv</tt> is converted to floating point. In order to 
+# avoid unwanted conversions to floating point strict consistency checking 
+# must be disabled first. Otherwise, the type <tt>Quantity</tt> raises a 
+# <tt>ConversionException</tt>.
+# In Line 5 we create the quantity that will be stored in a matrix. Our 
+# goal is to invert the matrix using NumPys <tt>linalg.inv</tt> method. 
+# We disable strict consistency checking in Line 11 and perform the 
+# operation in Line 14. Finally, the result has the type float.
+# \example linalg_example.py
+
+
+
+
+
 ## \file quantities.py
 #  \brief This file contains the classes to model, handle, and use physical
 #  quantities. 
