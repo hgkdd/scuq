@@ -413,6 +413,9 @@ class Quantity:
               @param self
               @return The value of this instance casted to complex.
         """
+        if(Quantity.is_strict() and self.get_default_unit() != units.ONE):
+            raise qexceptions.ConversionException(
+                "Only dimensionless quantities can be converted to complex")
         return complex( self.__value__ )
     
     def __long__( self ):
@@ -422,15 +425,23 @@ class Quantity:
               @param self
               @return The value of this instance casted to long.
         """
+        if(Quantity.is_strict() and self.get_default_unit() != units.ONE):
+            raise qexceptions.ConversionException(
+                "Only dimensionless quantities can be converted to long")
         return long( self.__value__ )
     
     def __float__( self ):
         """! @brief Cast this instance to the numeric type float.
               @attention All information about the unit used will be
                          stripped from the result.
+              @attention This conversion is only possible, if weak consitency
+              checking is enabled.
               @param self
               @return The value of this instance casted to float.
         """
+        if(Quantity.is_strict() and self.get_default_unit() != units.ONE):
+            raise qexceptions.ConversionException(
+                "Only dimensionless quantities can be converted to float")
         return float( self.__value__ )
     
     def __int__( self ):
@@ -440,6 +451,9 @@ class Quantity:
               @param self
               @return The value of this instance casted to int.
         """
+        if(Quantity.is_strict() and self.get_default_unit() != units.ONE):
+            raise qexceptions.ConversionException(
+                "Only dimensionless quantities can be converted to int")
         return int( self.__value__ )
     
     def __str__( self ):

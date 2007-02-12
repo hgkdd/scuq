@@ -1464,7 +1464,7 @@ class TestQuantity( unittest.TestCase ):
         # trivial
         result = self.newtons1 + self.newtons2
         assert( result.get_default_unit() == si.NEWTON )
-        assert( abs( result.get_value( si.NEWTON ) - 5.0 ) < 10e-5 )
+        assert( abs( result.get_value( si.NEWTON ) - 5.0 ) < 10e-6 )
         
         # check for error
         error = 0
@@ -1512,7 +1512,7 @@ class TestQuantity( unittest.TestCase ):
         # trivial
         result = self.newtons1 - self.newtons2
         assert( result.get_default_unit() == si.NEWTON )
-        assert( abs( result.get_value( si.NEWTON ) + 1.0 ) < 10e-5 )
+        assert( abs( result.get_value( si.NEWTON ) + 1.0 ) < 10e-6 )
         
         # check for error
         error = 0
@@ -1647,7 +1647,7 @@ class TestQuantity( unittest.TestCase ):
         result = numpy.hypot(self.newtons1, self.newtons2)
         assert( result.get_default_unit() == si.NEWTON )
         assert( abs( result.get_value( si.NEWTON ) - numpy.sqrt(13.0) ) 
-                < 10e-5 )
+                < 10e-6 )
 
         
     def test_div( self ):
@@ -1820,7 +1820,7 @@ class TestQuantity( unittest.TestCase ):
         newtons2 = self.newtons2
         newtons1 += newtons2
         assert( newtons1.get_default_unit() == si.NEWTON )
-        assert( abs( newtons1.get_value( si.NEWTON ) - 5.0 ) < 10e-5 )
+        assert( abs( newtons1.get_value( si.NEWTON ) - 5.0 ) < 10e-6 )
         
         # check for error
         error = 0
@@ -1878,7 +1878,7 @@ class TestQuantity( unittest.TestCase ):
         newtons2 = self.newtons2
         newtons1 -= newtons2
         assert( newtons1.get_default_unit() == si.NEWTON )
-        assert( abs( newtons1.get_value( si.NEWTON ) + 1.0 ) < 10e-5 )
+        assert( abs( newtons1.get_value( si.NEWTON ) + 1.0 ) < 10e-6 )
         
         # check for error
         error = 0
@@ -2945,6 +2945,7 @@ class TestQuantity( unittest.TestCase ):
         """! @brief Test casting quatities to other numeric types.
               @param self
         """
+        quantities.set_strict(False)
         q1 = quantities.Quantity( si.AMPERE, 10 )
         q2 = quantities.Quantity( si.AMPERE, 1.5 )
         q3 = quantities.Quantity( si.AMPERE, 
@@ -3001,6 +3002,7 @@ class TestQuantity( unittest.TestCase ):
         assert( abs( value - complex( 0.5, 0 ) ) < 1e-5 )
         value = complex( q4 )
         assert( value == complex( 2, 1 ) )
+        quantities.set_strict(True)
         
     def test_comparisions( self ):
         """! @brief Test comparing quantities.
