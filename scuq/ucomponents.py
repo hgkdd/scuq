@@ -284,8 +284,8 @@ class UncertainComponent:
               if the argument is identical with the current instance.
               @note This behavior is enforced to handle special cases.
                     Imagine you want to compare 
-                    @f$ sin(a @pm u_a) \times (a @pm u_a) @f$
-                    with @f$ sin(a @pm u_a) \times (b @pm u_b)@f$ with 
+                    @f$ sin(a \pm u_a) \times (a \pm u_a) @f$
+                    with @f$ sin(a \pm u_a) \times (b \pm u_b)@f$ with 
                     @f$ a = b;u_a = u_b @f$.
                     Since in the first case the values are identical, they
                     are dependent. In the second case the values are the same,
@@ -1186,7 +1186,7 @@ class Pow( BinaryOperation ):
               @param self
               @param component Another instance of uncertainty.
               @return A numeric value, representing the standard uncertainty.
-              @exception ArithmeticError If @f$x_1 @leq 0@f$ or @f$x_2 @leq 0@f$.
+              @exception ArithmeticError If @f$x_1 \leq 0@f$ or @f$x_2 \leq 0@f$.
         """
         u_x_1 = self.get_left().get_uncertainty( component )
         u_x_2 = self.get_right().get_uncertainty( component )
@@ -1305,7 +1305,7 @@ class Tan( UnaryOperation ):
       silbling.
       @attention Because of floating point rounding issues, instances of
                  this class may return invalid values instead of raising an
-                 OverflowError for values close to @f$n\times\frac{@pi}{2}@f$.
+                 OverflowError for values close to @f$n\times\frac{\pi}{2}@f$.
     """
     
     def __init__( self, right ):
@@ -1365,7 +1365,7 @@ class Sqrt( UnaryOperation ):
         """! @brief Checks for undefined arguments.
               @note The square root is only defined for positive values.
               @param self
-              @exception ArithmeticError If @f$x @leq 0@f$.
+              @exception ArithmeticError If @f$x \leq 0@f$.
         """
         if( self.get_silbling().get_value() < 0.0 ):
             raise ArithmeticError( "The argument must be positive" )
@@ -1418,9 +1418,9 @@ class Log( UnaryOperation ):
         
     def arithmetic_check( self ):
         """! @brief Checks for undefined arguments.
-              @note The natural logarithm is not defined for values @f$x @leq 0@f$.
+              @note The natural logarithm is not defined for values @f$x \leq 0@f$.
               @param self
-              @exception ArithmeticError If @f$x @leq 0@f$.
+              @exception ArithmeticError If @f$x \leq 0@f$.
         """
         if( self.get_silbling().get_value() < 0.0 ):
             raise ArithmeticError( "The argument must be positive" )
@@ -1476,7 +1476,7 @@ class ArcSin( UnaryOperation ):
         """! @brief Checks for undefined arguments.
               @note The Arc Sine is only defined within @f$[-1,1]@f$.
               @param self
-              @exception ArithmeticError If @f$x @nin [-1,1]@f$.
+              @exception ArithmeticError If @f$x \nin [-1,1]@f$.
         """
         value = self.get_silbling().get_value()
         if( value < -1.0 or value > 1.0 ):
@@ -1578,7 +1578,7 @@ class ArcCos( UnaryOperation ):
         """! @brief Checks for undefined arguments.
               @note The Arc Cosine is only defined within @f$[-1,1]@f$.
               @param self
-              @exception ArithmeticError If @f$x @nin [-1,1]@f$.
+              @exception ArithmeticError If @f$x \nin [-1,1]@f$.
         """
         value = self.get_silbling().get_value()
         if( value < -1.0 or value > 1.0 ):
@@ -1633,9 +1633,9 @@ class ArcCosh( UnaryOperation ):
     def arithmetic_check( self ):
         """! @brief Checks for undefined arguments.
               @note The inverse Hyperbolic Cosine is only defined 
-                    within @f$(1,@infty]@f$.
+                    within @f$(1,\infty]@f$.
               @param self
-              @exception ArithmeticError If @f$x @nin (1,@infty]@f$.
+              @exception ArithmeticError If @f$x \nin (1,\infty]@f$.
         """
         value = self.get_silbling().get_value()
         if( value <= 1.0 ):
@@ -1736,7 +1736,7 @@ class ArcTanh( UnaryOperation ):
               @note The inverse Hyperbolic Tangent is only defined 
                     within @f$(-1,1)@f$.
               @param self
-              @exception ArithmeticError If @f$x @nin (-1,1)@f$.
+              @exception ArithmeticError If @f$x \nin (-1,1)@f$.
         """
         value = self.get_silbling().get_value()
         if( value <= -1.0 or value >= 1.0 ):
@@ -1976,8 +1976,8 @@ class Abs( UnaryOperation ):
     
     def get_uncertainty( self, component ):
         """! @brief Returns the uncertainty of this node.
-              Let the node represent the operation @f$y = @lvertx@rvert @f$ then
-              the resulting uncertainty is @f$ u(y) = @lvert u(x) @rvert@f$.
+              Let the node represent the operation @f$y = \lvertx\rvert @f$ then
+              the resulting uncertainty is @f$ u(y) = \lvert u(x) \rvert@f$.
               @param self
               @param component Another instance of uncertainty.
               @return A numeric value, representing the standard uncertainty.
@@ -2019,7 +2019,7 @@ class Neg( UnaryOperation ):
     
     def get_uncertainty( self, component ):
         """! @brief Returns the uncertainty of this node.
-              Let the node represent the operation @f$y = @-x @f$ then
+              Let the node represent the operation @f$y = -x @f$ then
               the resulting uncertainty is @f$ u(y) = - u(x) @f$.
               @param self
               @param component Another instance of uncertainty.
@@ -2045,10 +2045,10 @@ class Context:
     """! @brief       This class provides the context for an uncertainty evaluation.
       It maintains the correlation between the inputs and can be used
       to evaluate the combined standard uncertainty, as shown below.
-      Let your model be @f$y = f(x_1,x_2,@ldots,x_N)@f$, then
-      @f$ u_c^2(y) = @sum_{i=1}^{N} 
+      Let your model be @f$y = f(x_1,x_2,\ldots,x_N)@f$, then
+      @f$ u_c^2(y) = \sum_{i=1}^{N} 
                      \left(\frac{\delta f}{\delta x_i} \right)^2 u^2(x_i) 
-                     + 2 @sum_{i=1}^{N}@sum_{j=i+1}^{N} 
+                     + 2 \sum_{i=1}^{N}\sum_{j=i+1}^{N} 
                      \frac{\delta f}{\delta x_i}\frac{\delta f}{\delta x_j} 
                      u(x_i,x_j)@f$.
     """
@@ -2155,18 +2155,18 @@ class Context:
     def dof( self, component ):
         """! @brief This method calculates the effective degrees of freedom using
                the Welch-Satterthwaite formulae:
-               @f$ @nu_{eff} = \frac{u_c^4(y)}
-                             {@sum_{i=1}^N \frac{\left(
-                          \frac{\delta f}{\delta x_i}\right)^4 u^4(x_i)}{@nu_i}} @f$
+               @f$ \nu_{\text{eff}} = \frac{u_c^4(y)}
+                             {\sum_{i=1}^N \frac{\left(
+                          \frac{\delta f}{\delta x_i}\right)^4 u^4(x_i)}{\nu_i}} @f$
                Where @f$ u_c(y) @f$ is the combined standard uncertainty, 
-               @f$ @nu_{i} @f$ is the degrees of freedom of the input @f$ x_i @f$.
+               @f$ \nu_{i} @f$ is the degrees of freedom of the input @f$ x_i @f$.
                @note The result of this method may be infinite. Since there is
                      no standard procedure in python to declare infinity, we use
                      our own constant for it. 
                @see arithmetic.INFINITY Our infinity constant.
                @param self
                @param component The component of uncertainty.
-               @return The effective degrees of freedom @f$ @nu_{eff} @f$.
+               @return The effective degrees of freedom @f$ \nu_{\text{eff}} @f$.
         """
         if( isinstance( component, quantities.Quantity ) ):
             unit  = component.get_default_unit()

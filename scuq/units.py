@@ -671,7 +671,7 @@ class Unit:
         raise NotImplementedError
     
     def __coerce__(self, other):
-        """"! @brief Implementation of coercion rules.
+        """! @brief Implementation of coercion rules.
         This implementation ensures that transformed units can be created
         from units.
 """
@@ -1018,7 +1018,7 @@ class CompoundUnit( DerivedUnit ):
               Two compound units are equal, if they have equal
               first and next units. 
               @attention The order of the first and next units matters
-                         (i.e. @f$hh:mm @neq mm:hh@f$)!
+                         (i.e. @f$hh:mm \neq mm:hh@f$)!
               @param self
               @param other Another compound unit to compare to.
               @return True, if the units are equal.

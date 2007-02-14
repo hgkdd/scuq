@@ -261,7 +261,7 @@ class Quantity:
         """! @brief Get the fraction of another instance of Quantity and this instance.
               @attention This method performs no conversion of alternate units: 
                     Even if the units are defined in the same dimension. For example,
-                    if one takes @f$m @div ft@f$ the result will be 
+                    if one takes @f$m \div ft@f$ the result will be 
                     @f$ \frac{ft}{m} @f$ not dimensionless.
               @param self The dividend.
               @param other Another instance of Quantity or numeric value used as 

@@ -1,7 +1,9 @@
-# ATTENTION: You must NOT encapsulate quantities in uncertain components.
+# ATTENTION: You must NOT encapsulate quantities in uncertain 
+# components.
 # this violates our design. Instead use the followin approach...
 
-# You have to import this module to use quantities and uncertain values.
+# You have to import this module to use quantities and uncertain 
+# values.
 from scuq import *
 # You have to import this module to use NumPy
 import numpy as n
@@ -23,12 +25,17 @@ assert(model_1.get_default_unit() == n.sqrt(si.METER))
 # Create a context for the uncertainty evaluation.
 c = ucomponents.Context()
 
-u_c = c.uncertainty(uvalue)                      # Evaluate the input VALUE
-assert(u_c == 0.2)                               # ...as expected
+# Evaluate the input VALUE
+u_c = c.uncertainty(uvalue)                      
+assert(u_c == 0.2)          # ...as expected
 
-u_c = c.uncertainty(uquantitiy)                  # Evaluate the input QUANTITY
-assert(u_c == quantities.Quantity(si.METER,0.2)) # this one has a unit (!)
+# Evaluate the input QUANTITY
+u_c = c.uncertainty(uquantitiy)
+# this one has a unit (!)
+assert(u_c == quantities.Quantity(si.METER,0.2)) 
 
-u_c = c.uncertainty(model_1)                     # Evaluate the model
+# Evaluate the model
+u_c = c.uncertainty(model_1)                     
+# ... the correct unit.
 assert(u_c == 
-  quantities.Quantity(n.sqrt(si.METER),0.1))     # ... the correct unit.
+  quantities.Quantity(n.sqrt(si.METER),0.1))

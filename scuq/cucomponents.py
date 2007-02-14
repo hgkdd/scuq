@@ -529,7 +529,7 @@ class CBinaryOperation(CUncertainComponent):
 
 class Exp(CUnaryOperation) : 
     """! @brief @brief This class models the exponential function \f$e^x\f$.
-     $x$ denotes the sibling of this instance. """
+     \f$x\f$ denotes the sibling of this instance. """
     
     def get_value(self):
         """! @brief Get the value of this component.

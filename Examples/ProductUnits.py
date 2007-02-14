@@ -17,7 +17,8 @@ print "si.NEWTON == myUnit: "+str(si.NEWTON == myUnit)
 # that myUnit has not the same purpose as si.NEWTON. 
 
 # However ...
-print "si.NEWTON.is_compatible(myUnit): "+str(si.NEWTON.is_compatible(myUnit))
+print "si.NEWTON.is_compatible(myUnit): "+\ 
+	str(si.NEWTON.is_compatible(myUnit))
 # They may have different purposes, but they describe the same
 # physical dimension. Therefore, they are compatible. 
 
@@ -35,12 +36,14 @@ myUnit = si.NEWTON * si.METER
 print myUnit
 
 # Lets test if they are equal...
-print "myUnit == si.KILOGRAM*si.METER**2/si.SECOND**2: "+str(myUnit == si.KILOGRAM*si.METER**2/si.SECOND**2)
+print "myUnit == si.KILOGRAM*si.METER**2/si.SECOND**2: "+ \
+	str(myUnit == si.KILOGRAM*si.METER**2/si.SECOND**2)
 # Unexpectedly this returns False, but why?
 # si.Newton is again an AlternateUnit.
 
 # However ...
-print "myUnit.isCompatible(si.KILOGRAM*si.METER**2/si.SECOND**2): "+str(myUnit.is_compatible(si.KILOGRAM*si.METER**2/si.SECOND**2))
+print "myUnit.isCompatible(si.KILOGRAM*si.METER**2/si.SECOND**2): "+ \
+	str(myUnit.is_compatible(si.KILOGRAM*si.METER**2/si.SECOND**2))
 # They may have different purposes, but they describe the same
 # physical dimension. Therefore, they are compatible. 
 
