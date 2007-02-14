@@ -51,3 +51,8 @@ dist: clean
 	
 test: $(SOURCES)
 	python scuq/testcases.py
+
+	
+#strip_cvs:
+#	rm -rf CVS .cvsignore doc/CVS doc/.cvsignore Examples/CVS \
+#	           Examples/.cvsignore scuq/CVS 
