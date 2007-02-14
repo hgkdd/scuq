@@ -1,52 +1,47 @@
-## \mainpage SCUQ - A class library for the evaluation of Scalar- or Complex-valued Uncertain Quantities.
-#  This library provides classes and functions that 
-#  provide support for modeling physical quantities and units. 
+## \mainpage SCUQ - A Class Library for the Evaluation of Scalar- and Complex-valued Uncertain Quantities.
+#
+#  This class library supports the evaluation of scalar (real) and complex-valued uncertain quantities.
+#  We divided the the library into the following modules. 
 #  <ul>
-#    <li> The Module scuq.units provides you with support for modeling and 
-#         converting physical units. 
-#    <li> The Module scuq.si uses the units module in order to provide you
-#         with support for SI units.
-#    <li> The Module scuq.arithmetic. This module contains functions
-#         to assists the other modules in this libary. It also
-#         contains the RationalNumber type (finished and tested).
-#    <li> The module scuq.quantities allows you to join units and numeric
-#         types in order to model physical quantities (finished and tested).
+#    <li> The module scuq.units supports modeling and converting physical units. 
+#    <li> The module scuq.si uses the units module to support SI units.
+#    <li> The module scuq.arithmetic. This module contains functions
+#         to assist the other modules in this libary. It also
+#         contains a RationalNumber type according to PEP-239 (see link shown below).
+#    <li> The module scuq.quantities allows combining units, numeric
+#         types, and uncertain components modeling physical quantities.
 #    <li> The module scuq.ucomponents module models uncertain values. 
-#         You can use it with the above modules in order to model uncertainty
-#         in measurements. You can assign an uncertainty to
-#         a numeric value and propagate it through a numpyematical
-#         model. The implementation makes use of the GUM-Tree pattern.
-#         This module helps you to create and use the numpyematical model
-#         (finished and tested). 
+#         It can be used in combination with the other modules  
+#         to model uncertainty in measurements by assigning an uncertainty 
+#         to a numeric value and propagating it through a mathematical
+#         model. The implementation uses the GUM-Tree pattern 
+#         (see references shown below).
 #    <li> The module scuq.cucomponents can be used to evaluate the
-#         uncertainty of complex-valued models in the same fashion as the
-#         above module.
+#         uncertainty of complex-valued models in a similar way as the
+#         module scuq.ucomponents does.
 #  </ul>
 #  \attention In contrast to the practice of explicit type checking and 
-#  raising TypeErrors if an argument is invalid, we used assertions. This
+#  raising a <tt>TypeError</tt> if an argument is invalid, we use assertions. This
 #  gives you the opportunity to check your assignments in debug mode and 
 #  running (relatively) fast code in release mode. The debug mode is enabled 
-#  by default when invoking Python with <tt>python \<Your Code\></tt>. In
-#  order to enable release mode, you should use 
-#  <tt>python -O \<Your Code\></tt>.
-#  \attention You should use <tt>UTF-8</tt> as default encoding. Since Greek 
-#  letters represent some physical quantities, units, and dimensions, we 
-#  decided to encode them in Unicode. However, you will still
-#  be able to use this library if you have another default encoding. The
-#  symbols will then be not printed correctly.
+#  by default when invoking Python with <tt>python \<Your Code\></tt> and 
+#  <tt>python -O \<Your Code\></tt> for release mode.
+#  \attention You should use <tt>UTF-8</tt> as default encoding because Greek 
+#  letters represent some physical quantities, units, and dimensions. However, 
+#  you will still be able to use this library if you have another default encoding. 
+#  The symbols will then not print correctly.
 #  \attention In this documentation the term <tt>integer</tt> refers to
 #             they Python type <tt>int</tt> as well as <tt>long</tt>. This
 #             library casts all <tt>int</tt> arguments to <tt>long</tt> 
-#             whenever they are used for conversions or calculations. 
+#             where applicable. 
 #             This makes overflows unlikely, since the precision of 
-#             <tt>long</tt> is limited by your systems memory in Python. 
-#             That said, you will most likely encounter an 
-#             <tt>MemoryError</tt>, if the accuracy of a long variable is 
-#             exausted. This procedure is necessary in order to provide
-#             backward compatibility to older versions of Python.
+#             <tt>long</tt> is limited by the platforms available memory in Python; 
+#             that said, you will most likely encounter a 
+#             <tt>MemoryError</tt> if the accuracy of a long variable is 
+#             exausted. 
 #  \note The patterns used to create the units, dimensions, and unit-operators
-#        have been inspired by Java Specification Request 275 that has already 
-#        been implemented in <a href="http://www.jscience.org">JScience</a> an
+#        have been inspired by Java Specification Request 275 that is 
+#        implemented in <tt>JScience</tt> (see link shown below), an
 #        open-source library for scientific computing in Java.
 #  \note The design patterns used for the evaluation of uncertainty are 
 #        subject to United States patent number 7,130,761. You should 
@@ -54,45 +49,42 @@
 #        within the 
 #        United States of America for commercial purposes. Their patent claims
 #        cover a wide variety of the field of automatic uncertainty 
-#        propagation. Therefore our amendments to their proposal may also be 
+#        propagation. Therefore our extensions to their proposal may also be 
 #        subject to the claims of that patent. In order to stop the 
 #        spread of e-patents in Europe, please support us 
-#        <a href="http://www.noepatents.org/" target="_blank">here</a>.
-#  \note There exists an alternative package for Python from the patent 
-#        holders that allowes the automatic propagation of uncertainty.
+#        and sign the petition for Software Patent Free Europe (see link shown below).
+#  \note There exists an alternative package for Python issued by the patent 
+#        holders that allows the automatic propagation of uncertainty.
 #        Unfortunately this package does not provide any support for
 #        physical quantities and units. This package does also not
-#        integrate the standard numpy module and is thus less flexible than
+#        integrate the standard numpy module and is therefore less flexible than
 #        our package. 
-#  \author <a href="http://thomas.reidemeister.org/" target="_blank">Thomas 
-#          Reidemeister</a>,
-#          <a href="http://wase.urz.uni-magdeburg.de/krauthae/" 
-#          target="_blank">Hans Georg Krauth&auml;user</a>
-#  \see <a href="http://www.jscience.org">JScience</a>: The Java Scientific
-#          Library.
-#  \see <a href="http://www.jcp.org/jsr/detail/275.jsp">JSR-275</a>: Notes on 
-#          the specification request. 
-#  \see "The "GUM Tree": A software design pattern for handling
-#       measurement uncertainty"; B. D. Hall; Industrial Research
-#       Report 1291; Measurements Standards Laboratory New Zealand (2003).
-#  \see "byGUM: A Python software package for calculating measurement
-#        uncertainty"; B. D. Hall; Industrial Research
-#        Report 1305; Measurements Standards Laboratory New Zealand (2005).
-#        - Another package for calculating measurement uncertainty.
-#  \see <a href="http://www.noepatents.org/" target="_blank">
-#       Petition for a Software Patent Free Europe</a>. 
-#       Please support us here!
-#  \see <a href="http://www.uspto.gov/patft/index.html" target="_blank">
-#       United States Patent and Trademark Office: Patent Database</a>. You
-#       can lookup the claims of the patent, mentioned above, here.
+#  \author Thomas Reidemeister
+#  \see <ul>
+#					<li> The Java Scientific Library<br>
+#       	     (<a href="http://www.jscience.org">http://www.jscience.org</a>)
+#         <li> Java Specification Request - 275<br>
+#              (<a href="http://www.jcp.org/jsr/detail/275.jsp">http://www.jcp.org/jsr/detail/275.jsp</a>)
+#         <li> "The "GUM Tree": A software design pattern for handling<br>
+#               measurement uncertainty"; B. D. Hall; Industrial Research
+#               Report 1291; Measurements Standards Laboratory New Zealand (2003).
+#         <li> "byGUM: A Python software package for calculating measurement
+#              uncertainty"; B. D. Hall; Industrial Research
+#              Report 1305; Measurements Standards Laboratory New Zealand (2005).
+#         <li> Petition for a Software Patent Free Europe<br>
+#              (<a href="http://www.noepatents.org/">http://www.noepatents.org/</a>).
+#         <li> United States Patent and Trademark Office<br>
+#              (<a href="http://www.uspto.gov/patft/index.html">http://www.uspto.gov/patft/</a>)
+#         <li> PEP-239 - Adding a Rational Type to Python<br>
+#              (<a href="http://www.python.org/dev/peps/pep-0239/">http://www.python.org/dev/peps/pep-0239/</a>)
+#       </ul>
 
 ## \file __init__.py
 #  \brief This file is evaluated whenever the quantities package is loaded.
 # 
 #  It loads the modules neccessary for operating this package. It also
 #  performs some global initialization.
-#  \author <a href="http://thomas.reidemeister.org/" target="_blank">Thomas 
-#          Reidemeister</a>
+#  \author Thomas Reidemeister
 
 ## \namespace scuq::__init__
 #  \brief This namespace does only contain variables for global initialization.
@@ -202,5 +194,5 @@
 #            argument. Therefore our coercion rules may not be
 #            symmetric when using operators from numpy.
 
-## Modules contained within the quantities package.
+## The modules contained within the quantities package.
 __all__ = ["arithmetic", "units", "qexceptions", "si", "quantities", "operators", "ucomponents", "cucomponents"]

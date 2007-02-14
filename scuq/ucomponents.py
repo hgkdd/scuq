@@ -69,9 +69,9 @@ class UncertainComponent:
         raise NotImplementedError
     
     def arithmetic_check( self ):
-        """! @brief This method checks this instance for numpyematical correctness.
+        """! @brief This method checks this instance for mathematical correctness.
               You should overload this method, if your class is not defined
-              for specific argument values. If any (numpyematical) invalid
+              for specific argument values. If any (mathematical) invalid
               values have been assigned, your implementation should raise an
               ArithmeticError explaining the problem.
               This method is usually called within the constructor of a class, 
