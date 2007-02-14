@@ -1476,7 +1476,7 @@ class ArcSin( UnaryOperation ):
         """! @brief Checks for undefined arguments.
               @note The Arc Sine is only defined within @f$[-1,1]@f$.
               @param self
-              @exception ArithmeticError If @f$x \nin [-1,1]@f$.
+              @exception ArithmeticError If @f$x \notin [-1,1]@f$.
         """
         value = self.get_silbling().get_value()
         if( value < -1.0 or value > 1.0 ):
@@ -1578,7 +1578,7 @@ class ArcCos( UnaryOperation ):
         """! @brief Checks for undefined arguments.
               @note The Arc Cosine is only defined within @f$[-1,1]@f$.
               @param self
-              @exception ArithmeticError If @f$x \nin [-1,1]@f$.
+              @exception ArithmeticError If @f$x \notin [-1,1]@f$.
         """
         value = self.get_silbling().get_value()
         if( value < -1.0 or value > 1.0 ):
@@ -1635,7 +1635,7 @@ class ArcCosh( UnaryOperation ):
               @note The inverse Hyperbolic Cosine is only defined 
                     within @f$(1,\infty]@f$.
               @param self
-              @exception ArithmeticError If @f$x \nin (1,\infty]@f$.
+              @exception ArithmeticError If @f$x \notin (1,\infty]@f$.
         """
         value = self.get_silbling().get_value()
         if( value <= 1.0 ):
@@ -1736,7 +1736,7 @@ class ArcTanh( UnaryOperation ):
               @note The inverse Hyperbolic Tangent is only defined 
                     within @f$(-1,1)@f$.
               @param self
-              @exception ArithmeticError If @f$x \nin (-1,1)@f$.
+              @exception ArithmeticError If @f$x \notin (-1,1)@f$.
         """
         value = self.get_silbling().get_value()
         if( value <= -1.0 or value >= 1.0 ):
@@ -1976,8 +1976,8 @@ class Abs( UnaryOperation ):
     
     def get_uncertainty( self, component ):
         """! @brief Returns the uncertainty of this node.
-              Let the node represent the operation @f$y = \lvertx\rvert @f$ then
-              the resulting uncertainty is @f$ u(y) = \lvert u(x) \rvert@f$.
+              Let the node represent the operation @f$y = |x| @f$ then
+              the resulting uncertainty is @f$ u(y) = |u(x)|@f$.
               @param self
               @param component Another instance of uncertainty.
               @return A numeric value, representing the standard uncertainty.
@@ -2155,7 +2155,7 @@ class Context:
     def dof( self, component ):
         """! @brief This method calculates the effective degrees of freedom using
                the Welch-Satterthwaite formulae:
-               @f$ \nu_{\text{eff}} = \frac{u_c^4(y)}
+               @f$ \nu_{eff} = \frac{u_c^4(y)}
                              {\sum_{i=1}^N \frac{\left(
                           \frac{\delta f}{\delta x_i}\right)^4 u^4(x_i)}{\nu_i}} @f$
                Where @f$ u_c(y) @f$ is the combined standard uncertainty, 
@@ -2166,7 +2166,7 @@ class Context:
                @see arithmetic.INFINITY Our infinity constant.
                @param self
                @param component The component of uncertainty.
-               @return The effective degrees of freedom @f$ \nu_{\text{eff}} @f$.
+               @return The effective degrees of freedom @f$ \nu_{eff} @f$.
         """
         if( isinstance( component, quantities.Quantity ) ):
             unit  = component.get_default_unit()

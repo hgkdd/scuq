@@ -17,8 +17,8 @@ TMP_FILES=doc.log scuq/*.pyc scuq/*.pyo doc/html doc/latex Examples/*.pyc \
 	  Examples/*.pyo *.log
 
 # Files and directories that are important for backups
-IMP_FILES=doc doc.cfg Examples scuq make_latex.sh doxytags2docstrings.py \
-	  code_verify.sh test.tcl Makefile
+IMP_FILES=doc doc.cfg Examples scuq make_latex.sh \
+	  Makefile AUTHORS
 
 # The souce files 
 SOURCES=scuq/arithmetic.py scuq/cucomponents.py scuq/__init__.py \

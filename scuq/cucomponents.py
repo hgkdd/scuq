@@ -211,7 +211,6 @@ class CUncertainComponent :
         argument.
         @param self
         @param y another component of uncertainty.
-        @test Das hier testen.
         @return \f$\sqrt{x^2 + y^2}\f$"""
         return Sqrt(self ** self + y ** y)
     
