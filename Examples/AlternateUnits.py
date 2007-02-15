@@ -24,5 +24,5 @@ print str(myNewton)
 print "myNewton == si.NEWTON: "+str(myNewton == si.NEWTON)
 
 # However they describe the same physical dimension, thus...
-print "myNewton.is_compatible(si.NEWTON): " \ 
+print "myNewton.is_compatible(si.NEWTON): "\
        +str(myNewton.is_compatible(si.NEWTON))

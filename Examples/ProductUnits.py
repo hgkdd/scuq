@@ -17,8 +17,8 @@ print "si.NEWTON == myUnit: "+str(si.NEWTON == myUnit)
 # that myUnit has not the same purpose as si.NEWTON. 
 
 # However ...
-print "si.NEWTON.is_compatible(myUnit): "+\ 
-	str(si.NEWTON.is_compatible(myUnit))
+print "si.NEWTON.is_compatible(myUnit): "\
+	+str(si.NEWTON.is_compatible(myUnit))
 # They may have different purposes, but they describe the same
 # physical dimension. Therefore, they are compatible. 
 
