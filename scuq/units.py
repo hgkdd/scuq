@@ -47,8 +47,6 @@ class PhysicalModel:
     """! @brief       This class models the abstract interface for physical models.
      
        This class provides an interface for defining physical models.
-       Up to now, the subclasses do not model relativistic effects. Therefore
-       this interface might be extended in the next version.
        @attention This class is only an abstract interface. You will have to
                   override it in order to get any effect.
        @see si.SIModel
