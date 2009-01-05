@@ -2151,6 +2151,22 @@ class Context:
                           self.get_correlation( comp1, comp2 ) * \
                           component.get_uncertainty( comp2 )
         return numpy.sqrt( result )
+
+    def value_uncertainty_unit( self, component):
+        """! @brief This method returns the value, combined standard uncertainty, and unit of an
+               uncertain value.
+              @param self
+              @param component The component of uncertainty to evaluate.
+              @return (value, The standard uncertainty,unit).
+        """
+        #if( isinstance( component, quantities.Quantity ) ):
+        unit  = component.get_default_unit()
+        ucomp = component.get_value( unit )
+        value = ucomp.get_value()
+        uncertainty=self.uncertainty(component).get_value(unit)
+        return value, uncertainty, unit
+        #assert( isinstance( component, UncertainComponent ) )
+        
     
     def dof( self, component ):
         """! @brief This method calculates the effective degrees of freedom using
