@@ -45,7 +45,7 @@ class UnitExistsException( QuantitiesException ):
                @param args Additional arguments of this exception.
         """
         QuantitiesException.__init__( self, *args )
-        self.__unit__ = unit
+        self._unit = unit
         
     def __str__( self ):
         """! @brief Returns a string describing this exception.
@@ -53,7 +53,7 @@ class UnitExistsException( QuantitiesException ):
               @return A string that describes this exception.
         """
         return QuantitiesException.__str__( self )+" :"+\
-               self.__unit__.__str__()
+               self._unit.__str__()
     
 class ConversionException( QuantitiesException ):
     """! @brief       General exception that is raised whenever a
@@ -71,7 +71,7 @@ class ConversionException( QuantitiesException ):
               @param args Additional arguments of this exception.
         """
         QuantitiesException.__init__( self, *args )
-        self.__unit__ = unit
+        self._unit = unit
         
     def __str__( self ):
         """! @brief Returns a string describing this exception.
@@ -79,7 +79,7 @@ class ConversionException( QuantitiesException ):
               @return A string that describes the exception.
         """
         return QuantitiesException.__str__( self )+" :"+\
-               self.__unit__.__str__()
+               self._unit.__str__()
                
 class NotDimensionlessException( QuantitiesException ):
     """! @brief       Exception that is raised whenever a
@@ -94,7 +94,7 @@ class NotDimensionlessException( QuantitiesException ):
               @param args Additional arguments of this exception.
         """
         QuantitiesException.__init__( self, *args )
-        self.__unit__ = unit
+        self._unit = unit
         
     def __str__( self ):
         """! @brief Returns a string describing this exception.
@@ -102,7 +102,7 @@ class NotDimensionlessException( QuantitiesException ):
               @return A string that describes the exception.
         """
         return QuantitiesException.__str__( self )+" :"+\
-               self.__unit__.__str__()
+               self._unit.__str__()
 
 class UnknownUnitException( QuantitiesException ):
     """! @brief       An exception that is raised whenever an unexpected unit was used.
@@ -116,7 +116,7 @@ class UnknownUnitException( QuantitiesException ):
               @param args Additional arguments of this exception.
         """
         QuantitiesException.__init__( self, *args )
-        self.__unit__ = unit
+        self._unit = unit
         
     def __str__( self ):
         """! @brief Returns a string describing this exception.
@@ -124,6 +124,6 @@ class UnknownUnitException( QuantitiesException ):
               @return String that describes the exception.
         """
         return QuantitiesException.__str__( self )+" :"+\
-               self.__unit__.__str__()
+               self._unit.__str__()
 
 ## @}

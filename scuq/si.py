@@ -178,7 +178,7 @@ KATAL       = units.AlternateUnit( "kat", MOLE/SECOND )
 
 # Change the default model for the Quantities.units module to 
 # the physical model of SI units
-__model     = SIModel()
-units.set_default_model( __model )
+_model     = SIModel()
+units.set_default_model( _model )
 
 ## @}

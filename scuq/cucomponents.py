@@ -341,14 +341,14 @@ class CUncertainComponent :
         @param self
         @param c An instance of Context"""
         assert(isinstance(c,Context))
-        self.__context = c
+        self._context = c
         
     def get_context(self):
         """! @brief This returns the assigned context of the component.
         This context is only needed for evaluating __str__
         @return c The Context of the component or <tt>None</tt>."""
         try:
-            context = self.__context
+            context = self._context
             return context
         except AttributeError:
             return None
@@ -358,7 +358,7 @@ class CUncertainComponent :
         @param self
         @return A string describing this component"""
         try:
-            context = self.__context
+            context = self._context
             u = context.uncertainty(self)
             v = self.get_value()
             return "Value = "+str(v)+"; Uncertainty =\n "+str(u)
@@ -414,13 +414,13 @@ class CUncertainInput(CUncertainComponent):
             raise TypeError("You cannot declare an instance of quantity as uncertain")
         
         value  = complex(value)
-        self.__value  = value
-        self.__avalue = complex_to_matrix(value)
+        self._value  = value
+        self._avalue = complex_to_matrix(value)
         u_real       = float(u_real)
         u_imag       = float(u_imag)
-        self.__jac    = numpy.matrix([[u_real, 0], 
+        self._jac    = numpy.matrix([[u_real, 0], 
                                      [0, u_imag]])
-        self.__dof    = dof
+        self._dof    = dof
     
     def depends_on(self):
         """! @brief Returns a list that contains this instance only.
@@ -432,13 +432,13 @@ class CUncertainInput(CUncertainComponent):
         """! @brief Get the value of this input.
         @param self
         @return The value of this input"""
-        return self.__value
+        return self._value
     
     def get_a_value(self):
         """! @brief Get the value as array.
         @param self
         @return The value of this input as array."""
-        return self.__avalue
+        return self._avalue
     
     def get_uncertainty(self, x):
         """! @brief If <tt>x == self</tt> get the uncertainty of the current node,
@@ -447,7 +447,7 @@ class CUncertainInput(CUncertainComponent):
         @param x Another instance of CUncertainInput
         @return The uncertainty of this instance with respect to the argument."""
         if(self is x):
-            return self.__jac
+            return self._jac
         else:
             return numpy.zeros((2,2))
         
@@ -455,21 +455,21 @@ class CUncertainInput(CUncertainComponent):
         """! @brief Get the degrees of freedom assigned to this input.
         @param self
         @return The degrees of freedom assigned to this input."""
-        return self.__dof
+        return self._dof
     
     def __setstate__(self, state):
         """! @brief This method provides an interface for deserializing objects using
         pickle.
         @param self
         @param state The state to be restored."""
-        self.__value,self.__avalue,self.__jac = state
+        self._value,self._avalue,self._jac = state
     
     def __getstate__(self):
         """! @brief This method provides an interface for serializing objects using
         pickle.
         @param self
         @return The state of this component."""
-        return (self.__value,self.__avalue,self.__jac)
+        return (self._value,self._avalue,self._jac)
 
 class CUnaryOperation(CUncertainComponent): 
     """! @brief This abstract class models an unary operation. """
@@ -478,13 +478,13 @@ class CUnaryOperation(CUncertainComponent):
         """! @brief The default constructor.
         @param self
         @param sibling The sibling of this operation."""
-        self.__sibling = CUncertainComponent.value_of(sibling)
+        self._sibling = CUncertainComponent.value_of(sibling)
         
     def get_sibling(self):
         """! @brief Get the sibling of this operation.
         @param self
         @return The sibling"""
-        return self.__sibling
+        return self._sibling
     
     def depends_on(self):
         """! @brief Get the instances of CUncertainInput that this instance
@@ -492,7 +492,7 @@ class CUnaryOperation(CUncertainComponent):
         @param self
         @return A list containing the instances of CUncertainInput that this 
                  instance depends on."""
-        return us.clearDuplicates(self.__sibling.depends_on())
+        return us.clearDuplicates(self._sibling.depends_on())
 
 class CBinaryOperation(CUncertainComponent): 
     """! @brief This abstract class models a binary operation. """
@@ -502,20 +502,20 @@ class CBinaryOperation(CUncertainComponent):
         @param self
         @param left The left sibling sibling of this operation.
         @param right The right sibling sibling of this operation."""
-        self.__left  = CUncertainComponent.value_of(left)
-        self.__right = CUncertainComponent.value_of(right)
+        self._left  = CUncertainComponent.value_of(left)
+        self._right = CUncertainComponent.value_of(right)
         
     def get_left(self):
         """! @brief Get the left sibling of this operation.
         @param self
         @return The sibling"""
-        return self.__left
+        return self._left
     
     def get_right(self):
         """! @brief Get the right sibling of this operation.
         @param self
         @return The sibling"""
-        return self.__right
+        return self._right
     
     def depends_on(self):
         """! @brief Get the instances of CUncertainInput that this instance
@@ -523,8 +523,8 @@ class CBinaryOperation(CUncertainComponent):
         @param self
         @return A list containing the instances of CUncertainInput that this 
                 instance depends on."""
-        return us.clearDuplicates(self.__left.depends_on()+
-                                  self.__right.depends_on())
+        return us.clearDuplicates(self._left.depends_on()+
+                                  self._right.depends_on())
 
 class Exp(CUnaryOperation) : 
     """! @brief @brief This class models the exponential function \f$e^x\f$.
@@ -557,14 +557,14 @@ class Log(CUnaryOperation) :
         @param base The base of the logarithm (must be a real number)."""
         CUnaryOperation.__init__(self,sibling)
         base = float(base)
-        self.__base = base
+        self._base = base
     
     def get_value(self):
         """! @brief Get the value of this component.
         @param self
         @return The value of this component."""
         x = self.get_sibling().get_value()
-        return numpy.log(x)/numpy.log(self.__base)
+        return numpy.log(x)/numpy.log(self._base)
     
     def get_uncertainty(self, x):
         """! @brief Get the partial derivate of this component with respect to
@@ -573,7 +573,7 @@ class Log(CUnaryOperation) :
         
         # create the complex jacobi matrix
         z = self.get_sibling().get_value()
-        diff_val = 1.0/(z * numpy.log(self.__base))
+        diff_val = 1.0/(z * numpy.log(self._base))
         # transform it, since it is analytical
         jac = complex_to_matrix(diff_val)
         return jac * self.get_sibling().get_uncertainty(x)
@@ -1152,7 +1152,7 @@ class Context:
      is able to evaluate the effective degrees of freedom."""
 
 
-    def __check_cmatrix(matrix):
+    def _check_cmatrix(matrix):
         """! @brief Helper function to verify matrices of corellation coefficients.
          @param matrix The matrix to check.
          \exception TypeError If the argument is invalid"""
@@ -1162,7 +1162,7 @@ class Context:
             raise TypeError("Expecting a 2x2 matrix of corelation coefficients")
         #if(sum(matrix > 1.0)):
         #    raise TypeError("Expecting a matrix of corelation coefficients <= 1.0")
-    __check_cmatrix = staticmethod(__check_cmatrix)
+    _check_cmatrix = staticmethod(_check_cmatrix)
 
 
     def __init__(self):
@@ -1170,7 +1170,7 @@ class Context:
          correlation matrices.
          @param self"""
 
-        self.__correlation = dict()
+        self._correlation = dict()
 
 
     def gaussian(self, val, u_r, u_i, dof = arithmetic.INFINITY,
@@ -1220,14 +1220,14 @@ class Context:
             return
 
         matrix = numpy.matrix(matrix)
-        Context.__check_cmatrix(matrix)
+        Context._check_cmatrix(matrix)
         assert(isinstance(c1, CUncertainInput))
         assert(isinstance(c2, CUncertainInput))
         c1.set_context(self)
         c2.set_context(self)
-        self.__correlation[(c1,c2)] = matrix
+        self._correlation[(c1,c2)] = matrix
         # ensure symmetry
-        self.__correlation[(c2,c1)] = matrix
+        self._correlation[(c2,c1)] = matrix
 
 
     def get_correlation(self, c1, c2):
@@ -1251,7 +1251,7 @@ class Context:
             return self.get_correlation(fc1, fc2)
 
         try:
-            result = self.__correlation[(c1,c2)]
+            result = self._correlation[(c1,c2)]
         except KeyError:
             if(c1 is c2):
                 return numpy.matrix([[1,0],[0,1]])

@@ -208,10 +208,10 @@ class TestSIUnits( unittest.TestCase ):
                                    si.AMPERE, "V" )
         TestSIUnits.ALTERNATE_TEST( si.FARAD, si.COULOMB / si.VOLT, 
                                    si.AMPERE, "F" )
-        __omega = u"\u03A9"
-        __encoded = __omega.encode( "UTF-8" )
+        _omega = u"\u03A9"
+        _encoded = _omega.encode( "UTF-8" )
         TestSIUnits.ALTERNATE_TEST( si.OHM, si.VOLT / si.AMPERE, 
-                                   si.AMPERE, __encoded )
+                                   si.AMPERE, _encoded )
         TestSIUnits.ALTERNATE_TEST( si.SIEMENS, si.AMPERE / si.VOLT, 
                                    si.AMPERE, "S" )
         TestSIUnits.ALTERNATE_TEST( si.WEBER, si.VOLT * si.SECOND, 

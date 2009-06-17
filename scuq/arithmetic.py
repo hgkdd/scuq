@@ -88,8 +88,8 @@ class RationalNumber:
         if( divisor == 0L ):
             raise ArithmeticError( "Divide by zero" )
         
-        self.__divisor__ = long( divisor )    
-        self.__dividend__ = long( dividend )
+        self._divisor = long( divisor )    
+        self._dividend = long( dividend )
         self.normalize()
         
     def __str__( self ):
@@ -97,22 +97,22 @@ class RationalNumber:
               @param self
               @return A string representing this rational number.
         """
-        if( self.__divisor__ == 1L ):
-            return str( self.__dividend__ )
+        if( self._divisor == 1L ):
+            return str( self._dividend )
         else:
-            return "("+str( self.__dividend__ )+"/"+str( self.__divisor__ )+")"
+            return "("+str( self._dividend )+"/"+str( self._divisor )+")"
         
     def normalize( self ):
         """! @brief  This method maintains the canonical form of this rational 
                number and avoids negative divisors.
                @param self
         """
-        if( self.__divisor__ < 0 ):
-            self.__dividend__ = - self.__dividend__
-            self.__divisor__  = - self.__divisor__
-        mygcd = gcd( abs( self.__dividend__ ), self.__divisor__ )
-        self.__dividend__ = self.__dividend__ / mygcd
-        self.__divisor__  = self.__divisor__ / mygcd
+        if( self._divisor < 0 ):
+            self._dividend = - self._dividend
+            self._divisor  = - self._divisor
+        mygcd = gcd( abs( self._dividend ), self._divisor )
+        self._dividend = self._dividend / mygcd
+        self._divisor  = self._divisor / mygcd
         
     ### The following methods are used to emulate the
     ### numeric behaviour.
@@ -131,22 +131,22 @@ class RationalNumber:
               @param self
               @return An integer.    
         """
-        return int( self.__dividend__ )/int( self.__divisor__ )
+        return int( self._dividend )/int( self._divisor )
     
     def __long__( self ):
         """! @brief Cast this rational number to a long integer.
               @param self
               @return An integer. 
         """
-        return self.__dividend__ / self.__divisor__
+        return self._dividend / self._divisor
     
     def __float__( self ):
         """! @brief Cast this rational number to a floating point number.
               @param self
               @return An integer. 
         """
-        return float( operator.truediv( self.__dividend__, 
-                                       self.__divisor__ ) )
+        return float( operator.truediv( self._dividend, 
+                                       self._divisor ) )
     
     def __add__( self, value ):
         """! @brief Add a number and return the result.
@@ -156,9 +156,9 @@ class RationalNumber:
         """
         assert( isinstance( value, RationalNumber ) )
         
-        selfDividend  = self.__dividend__ * value.__divisor__
-        otherDividend = value.__dividend__ * self.__divisor__
-        newDivisor    = self.__divisor__ * value.__divisor__
+        selfDividend  = self._dividend * value._divisor
+        otherDividend = value._dividend * self._divisor
+        newDivisor    = self._divisor * value._divisor
         return RationalNumber( selfDividend + otherDividend, \
                                newDivisor )
     
@@ -170,9 +170,9 @@ class RationalNumber:
         """
         assert( isinstance( value, RationalNumber ) )
         
-        selfDividend  = self.__dividend__ * value.__divisor__
-        otherDividend = value.__dividend__ * self.__divisor__
-        newDivisor    = self.__divisor__ * value.__divisor__
+        selfDividend  = self._dividend * value._divisor
+        otherDividend = value._dividend * self._divisor
+        newDivisor    = self._divisor * value._divisor
         return RationalNumber( selfDividend - otherDividend, \
                                   newDivisor )
     
@@ -184,8 +184,8 @@ class RationalNumber:
         """
         assert( isinstance( value, RationalNumber ) )
         
-        newDividend   = self.__dividend__ * value.__dividend__
-        newDivisor    = self.__divisor__ * value.__divisor__
+        newDividend   = self._dividend * value._dividend
+        newDivisor    = self._divisor * value._divisor
         return RationalNumber( newDividend, newDivisor )
     
     def __pow__( self, value ):
@@ -204,7 +204,7 @@ class RationalNumber:
                 return pow( ~self, -value )
             else:
                 value = long(value)
-                return RationalNumber( self.__dividend__**value, self.__divisor__
+                return RationalNumber( self._dividend**value, self._divisor
                                        **value )
                 
         ## something else (maybe float)
@@ -231,11 +231,11 @@ class RationalNumber:
         """
         assert( isinstance( value, RationalNumber ) )
 
-        if( value.__dividend__ == 0L ):
+        if( value._dividend == 0L ):
             raise ArithmeticError( "Divide by zero" )
 
-        newDividend   = self.__dividend__ * value.__divisor__
-        newDivisor    = self.__divisor__ * value.__dividend__
+        newDividend   = self._dividend * value._divisor
+        newDivisor    = self._divisor * value._dividend
         return RationalNumber( newDividend, newDivisor )
     
     def __neg__( self ):
@@ -243,21 +243,21 @@ class RationalNumber:
               @param self
               @return A new rational number.
         """
-        return RationalNumber( -self.__dividend__, self.__divisor__ )
+        return RationalNumber( -self._dividend, self._divisor )
     
     def __pos__( self ):
         """! @brief This method returns a copy of this instance.
               @param self
               @return A new rational number.
         """
-        return RationalNumber( self.__dividend__, self.__divisor__ )
+        return RationalNumber( self._dividend, self._divisor )
     
     def __abs__( self ):
         """! @brief This method returns the absolute value of this instance.
               @param self
               @return A new rational number.
         """
-        if( self.__dividend__ < 0 ):
+        if( self._dividend < 0 ):
             return self.__neg__()
         return self.__pos__()
     
@@ -267,21 +267,21 @@ class RationalNumber:
               @param self
               @return A new rational number.
         """
-        return RationalNumber( self.__divisor__, self.__dividend__ )
+        return RationalNumber( self._divisor, self._dividend )
     
     def get_dividend( self ):
         """! @brief Returns the dividend of this instance.
               @param self
               @return The dividend of this instance.
         """
-        return self.__dividend__
+        return self._dividend
     
     def get_divisor( self ):
         """! @brief Returns the divisor of this instance.
               @param self
               @return The divisor of this instance.
         """
-        return self.__divisor__
+        return self._divisor
     
     def __eq__( self, value ):
         """! @brief Checks if this instance is equal to a number.
@@ -296,8 +296,8 @@ class RationalNumber:
             except NotImplementedError:
                 return False
         
-        return self.__divisor__ == value.__divisor__ \
-           and self.__dividend__ == value.__dividend__
+        return self._divisor == value._divisor \
+           and self._dividend == value._dividend
 
     def __lt__( self, value ):
         """! @brief Checks if this instance is less than another number.
@@ -308,10 +308,10 @@ class RationalNumber:
         assert( operator.isNumberType( value ) )
         
         if( isinstance( value, long ) or isinstance( value, int ) ):
-            return self.__dividend__ < self.__divisor__ * long( value )
+            return self._dividend < self._divisor * long( value )
         if( isinstance( value, RationalNumber ) ):
-            return self.__dividend__ * value.__divisor__ < \
-                   value.__dividend__ * self.__divisor__
+            return self._dividend * value._divisor < \
+                   value._dividend * self._divisor
         # something else
         return float( self ) < value
     
@@ -324,10 +324,10 @@ class RationalNumber:
         assert( operator.isNumberType( value ) )
         
         if( isinstance( value, long ) or isinstance( value, int ) ):
-           return self.__divisor__ != 1L or self.__dividend__ != value
+           return self._divisor != 1L or self._dividend != value
         if( isinstance( value, RationalNumber ) ):
-           return self.__divisor__ != value.__divisor__ or \
-                  self.__dividend__ != value.__dividend__
+           return self._divisor != value._divisor or \
+                  self._dividend != value._dividend
         # something else
         return value != float( self )
 
@@ -340,10 +340,10 @@ class RationalNumber:
         assert( operator.isNumberType( value ) )
         
         if( isinstance( value, long ) or isinstance( value, int ) ):
-            return self.__dividend__ > self.__divisor__ * long( value )
+            return self._dividend > self._divisor * long( value )
         if( isinstance( value, RationalNumber ) ):
-            return self.__dividend__ * value.__divisor__ > \
-                   value.__dividend__ * self.__divisor__
+            return self._dividend * value._divisor > \
+                   value._dividend * self._divisor
         # something else
         return float( self ) > value
 
@@ -385,7 +385,7 @@ class RationalNumber:
               @param self
               @return True, if the dividend is nonzero.
         """
-        return self.__dividend__ != 0L
+        return self._dividend != 0L
     
     ### The same arithmetic Operations again, now for
     ### left arguments.
@@ -426,14 +426,14 @@ class RationalNumber:
               @return A string that represents the serialized form
                       of this instance.
         """
-        return ( self.__dividend__, self.__divisor__ )
+        return ( self._dividend, self._divisor )
     
     def __setstate__( self, state ):
         """! @brief Deserialization using pickle.
               @param self
               @param state The state of the object.
         """
-        self.__dividend__, self.__divisor__ = state
+        self._dividend, self._divisor = state
         
     def value_of( number ):
         """! @brief Factory for generating Rationalnumbers.
@@ -456,7 +456,7 @@ class RationalNumber:
               be casted to long accurately.
               @return True, if the divisor is equal to one.
         """
-        return self.__divisor__ == 1L
+        return self._divisor == 1L
     
     ### The definition of numpy ufuncts
     ### All of these methods cast the rational numbers
@@ -596,6 +596,15 @@ class RationalNumber:
               @note This number will be converted to float. 
         """
         return numpy.fabs( float( self ) )
+
+    def absolute( self ):
+        """! @brief This method provides the broadcast interface for
+              numpy.absolute.
+              @param self
+              @return The absolute value of this number.
+              @note This number will be converted to float. 
+        """
+        return numpy.absolute( float( self ) )
     
     def floor( self ):
         """! @brief This method provides the broadcast interface for

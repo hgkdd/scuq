@@ -473,7 +473,7 @@ class UncertainComponent:
               @see __str__
               @see Context
         """
-        self.__context = context
+        self._context = context
     
     def __str__( self ):
         """! @brief This method returs the absolute value of this instance.
@@ -485,7 +485,7 @@ class UncertainComponent:
         bnc = False
         context = None
         try:
-            context = self.__context
+            context = self._context
         except AttributeError:
             context = Context()
             bnc = True
@@ -637,6 +637,14 @@ class UncertainComponent:
               @return The absolute value of this component.
         """
         return Abs( self )
+
+    def absolute( self ):
+        """! @brief This method provides the broadcast interface for
+              numpy.absolute.
+              @param self
+              @return The absolute value of this component.
+        """
+        return Abs( self )
     
     def exp( self ):
         """! @brief This method provides the broadcast interface for
@@ -689,9 +697,9 @@ class UncertainInput( UncertainComponent ):
             measurement uncertainty"; B. D. Hall; Industrial Research
             Report 1291; Measurements Standards Laboratory New Zealand (2003).
     """
-    __value       = 0.0
-    __uncertainty = 0.0
-    __dof         = 0.0
+    _value       = 0.0
+    _uncertainty = 0.0
+    _dof         = 0.0
     
     def __init__( self, value, uncertainty, dof=arithmetic.INFINITY ):
         """! @brief Default constructor.
@@ -716,9 +724,9 @@ class UncertainInput( UncertainComponent ):
         assert( operator.isNumberType( uncertainty ) )
         assert( operator.isNumberType( dof ) or dof == arithmetic.INFINITY )
         
-        self.__value = value
-        self.__uncertainty = uncertainty
-        self.__dof = dof
+        self._value = value
+        self._uncertainty = uncertainty
+        self._dof = dof
         
     
     def get_value( self ):
@@ -726,14 +734,14 @@ class UncertainInput( UncertainComponent ):
               @param self
               @return A numeric value, representing the value.
         """
-        return self.__value
+        return self._value
     
     def get_dof( self ):
         """! @brief Returns the assigned degrees of freedom.
               @param self
               @return A numeric value or arithmetic.INFINITY, representing the value.
         """
-        return self.__dof
+        return self._dof
     
     def get_uncertainty( self, component ):
         """! @brief Returns the assigned uncertainty.
@@ -743,7 +751,7 @@ class UncertainInput( UncertainComponent ):
               @see UncertainComponent.get_uncertainty
         """
         if( self is component ):
-            return self.__uncertainty
+            return self._uncertainty
         return 0.0
     
     def depends_on( self ):
@@ -758,14 +766,14 @@ class UncertainInput( UncertainComponent ):
               @return A string that represents the serialized form
                       of this instance.
         """
-        return ( self.__value, self.__uncertainty, self.__dof )
+        return ( self._value, self._uncertainty, self._dof )
     
     def __setstate__( self, state ):
         """! @brief Deserialization using pickle.
               @param self
               @param state The state of the object.
         """
-        self.__value, self.__uncertainty, self.__dof = state
+        self._value, self._uncertainty, self._dof = state
         
     def equal_debug( self, other ):
         """! @brief A method that is only used for serialization checking.
@@ -777,9 +785,9 @@ class UncertainInput( UncertainComponent ):
         other = UncertainComponent.value_of( other )
         if( not isinstance( other, UncertainInput ) ):
             return False
-        return self.__value == other.__value and \
-               self.__uncertainty == other.__uncertainty and \
-               self.__dof == other.__dof
+        return self._value == other._value and \
+               self._uncertainty == other._uncertainty and \
+               self._dof == other._dof
                
     def __hash__( self ):
         """! @brief Hash this instance.
@@ -793,10 +801,10 @@ class BinaryOperation( UncertainComponent ):
     """
     
     ## The right silbling of the operation.
-    __right = None
+    _right = None
     
     ## The left silbling of the operation.
-    __left  = None
+    _left  = None
     
     def __init__( self, left, right ):
         """! @brief Default constructor.
@@ -810,28 +818,28 @@ class BinaryOperation( UncertainComponent ):
         assert( left != None )
         assert( right != None )
         
-        self.__right = UncertainComponent.value_of( right )
-        self.__left  = UncertainComponent.value_of( left )
+        self._right = UncertainComponent.value_of( right )
+        self._left  = UncertainComponent.value_of( left )
 
     def depends_on( self ):
         """! @brief Get the components of uncertainty, that this class depends on.
               @return A list of the components of uncertainty.
         """
-        list  = self.__left.depends_on()
-        list += self.__right.depends_on()
+        list  = self._left.depends_on()
+        list += self._right.depends_on()
         return clearDuplicates( list )
     
     def get_right( self ):
         """! @brief Return the right silbling.
               @return The right silbling.
         """
-        return self.__right
+        return self._right
     
     def get_left( self ):
         """! @brief Return the left silbling.
               @return The left silbling.
         """
-        return self.__left
+        return self._left
     
     def __getstate__( self ):
         """! @brief Serialization using pickle.
@@ -839,14 +847,14 @@ class BinaryOperation( UncertainComponent ):
               @return A string that represents the serialized form
                       of this instance.
         """
-        return ( self.__left, self.__right )
+        return ( self._left, self._right )
     
     def __setstate__( self, state ):
         """! @brief Deserialization using pickle.
               @param self
               @param state The state of the object.
         """
-        self.__left, self.__right = state
+        self._left, self._right = state
         
     def equal_debug( self, other ):
         """! @brief A method that is only used for serialization checking.
@@ -858,8 +866,8 @@ class BinaryOperation( UncertainComponent ):
         other = UncertainComponent.value_of( other )
         if( not isinstance( other, BinaryOperation ) ):
             return False
-        return self.__right.equal_debug( other.__right ) and \
-               self.__left.equal_debug( other.__left )
+        return self._right.equal_debug( other._right ) and \
+               self._left.equal_debug( other._left )
         
     
 class UnaryOperation( UncertainComponent ):
@@ -868,7 +876,7 @@ class UnaryOperation( UncertainComponent ):
        that have one silbling.
     """
     ## The silbling of the operation.
-    __right = None
+    _right = None
     
     def __init__( self, right ):
         """! @brief Default constructor.
@@ -876,20 +884,20 @@ class UnaryOperation( UncertainComponent ):
               @param right The silbling of this instance.
         """
         assert( right != None )
-        self.__right = UncertainComponent.value_of( right )
+        self._right = UncertainComponent.value_of( right )
 
     def depends_on( self ):
         """! @brief Abstract method: The implementation should return a list of
               the components of uncertainty, that this component depends on.
               @return A list of the components of uncertainty.
         """
-        return clearDuplicates( self.__right.depends_on() )
+        return clearDuplicates( self._right.depends_on() )
     
     def get_silbling( self ):
         """! @brief Return the silbling.
               @return The silbling.
         """
-        return self.__right
+        return self._right
     
     def __getstate__( self ):
         """! @brief Serialization using pickle.
@@ -897,14 +905,14 @@ class UnaryOperation( UncertainComponent ):
               @return A string that represents the serialized form
                       of this instance.
         """
-        return self.__right
+        return self._right
     
     def __setstate__( self, state ):
         """! @brief Deserialization using pickle.
               @param self
               @param state The state of the object.
         """
-        self.__right = state
+        self._right = state
         
     def equal_debug( self, other ):
         """! @brief A method that is only used for serialization checking.
@@ -916,7 +924,7 @@ class UnaryOperation( UncertainComponent ):
         other = UncertainComponent.value_of( other )
         if( not isinstance( other, UnaryOperation ) ):
             return False
-        return self.__right.equal_debug( other.__right )
+        return self._right.equal_debug( other._right )
     
 class Add( BinaryOperation ):
     """! @brief       This class models GUM-tree nodes that add two silblings.
@@ -1972,7 +1980,7 @@ class Abs( UnaryOperation ):
               @return A numeric value, representing the absolute value of the 
                       silbling.
         """
-        return numpy.fabs( self.get_silbling().get_value() )
+        return numpy.absolute( self.get_silbling().get_value() )
     
     def get_uncertainty( self, component ):
         """! @brief Returns the uncertainty of this node.
@@ -1984,7 +1992,7 @@ class Abs( UnaryOperation ):
         """
         u_x = self.get_silbling().get_uncertainty( component )
         
-        return numpy.fabs( u_x )
+        return numpy.absolute( u_x )
     
     def equal_debug( self, other ):
         """! @brief A method that is only used for serialization checking.
@@ -2060,7 +2068,7 @@ class Context:
                     models.
               @param self
         """
-        self.__correlationMatrix = {}
+        self._correlationMatrix = {}
         
     def set_correlation( self, firstItem, secondItem, corr ):
         """! @brief This method sets the correlation coefficient @f$ r(x_1,x_2) @f$
@@ -2096,9 +2104,9 @@ class Context:
             return
         
         # Update the covariance (lookup-table)
-        self.__correlationMatrix[ ( firstItem, secondItem ) ] = corr 
+        self._correlationMatrix[ ( firstItem, secondItem ) ] = corr 
         # ensure symmetry
-        self.__correlationMatrix[ ( secondItem, firstItem ) ] = corr 
+        self._correlationMatrix[ ( secondItem, firstItem ) ] = corr 
     
     def get_correlation( self, firstItem, secondItem ):
         """! @brief This method returns the correlation coefficient @f$ r(x_1,x_2) @f$
@@ -2129,7 +2137,7 @@ class Context:
         if( firstItem == secondItem ):
             return 1.0
         
-        return self.__correlationMatrix.get( ( firstItem, secondItem ), 0.0 )
+        return self._correlationMatrix.get( ( firstItem, secondItem ), 0.0 )
         
     def uncertainty( self, component ):
         """! @brief This method returns the combined standard uncertainty of an
@@ -2162,8 +2170,12 @@ class Context:
         #if( isinstance( component, quantities.Quantity ) ):
         unit  = component.get_default_unit()
         ucomp = component.get_value( unit )
-        value = ucomp.get_value()
-        uncertainty=self.uncertainty(component).get_value(unit)
+        try:
+            value = ucomp.get_value()
+            uncertainty=self.uncertainty(component).get_value(unit)
+        except AttributeError:
+            value = ucomp
+            uncertainty=0.0
         return value, uncertainty, unit
         #assert( isinstance( component, UncertainComponent ) )
         

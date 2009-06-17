@@ -114,9 +114,9 @@ class Quantity:
       @note Instances of this class can be serialized using pickle.
     """
     
-    __STRICT = True
+    _STRICT = True
     
-    def __unitComparsion( unit1, unit2 ):
+    def _unitComparsion( unit1, unit2 ):
         """! @brief Helper method. 
               @param unit1 A unit.
               @param unit2 Another unit.
@@ -130,7 +130,7 @@ class Quantity:
         
         return ( ( unit1 == unit2 ) or
                 ( unit1.is_compatible( unit2 ) and ( not strict ) ) )
-    __unitComparsion = staticmethod( __unitComparsion )
+    _unitComparsion = staticmethod( _unitComparsion )
     
     def __init__( self, unit, value ):
         """! @brief Default constructor.
@@ -151,8 +151,8 @@ class Quantity:
         assert( not isinstance( value, units.Unit ) )
         assert( not isinstance( value, Quantity ) )
         
-        self.__unit__    = unit
-        self.__value__   = Quantity.__accuracy( value )
+        self._unit    = unit
+        self._value   = Quantity._accuracy( value )
     
     def get_value( self, unit ):
         """! @brief Get the absolute value of the quantity using the specified unit.
@@ -163,13 +163,13 @@ class Quantity:
               @exception qexceptions.ConversionException If the units are not
                          comparable.
         """
-        if( not Quantity.__unitComparsion( self.__unit__, unit ) ):
+        if( not Quantity._unitComparsion( self._unit, unit ) ):
             raise qexceptions.ConversionException( unit, 
                                                   " is not comparable to "
-                                                  +str( self.__unit__ ) )
+                                                  +str( self._unit ) )
         
-        operator = self.__unit__.get_operator_to( unit )
-        return operator.convert( self.__value__ )
+        operator = self._unit.get_operator_to( unit )
+        return operator.convert( self._value )
     
     def get_default_unit( self ):
         """! @brief Get the unit that is used commonly for this quantity.
@@ -177,14 +177,14 @@ class Quantity:
               @param self The current instance of this class.
               @return The corresponding unit.
         """
-        return self.__unit__
+        return self._unit
     
     def is_dimensionless( self ):
         """! @brief Check if this quantity is dimensionless.
               @param self
               @return True, if the unit assigned is comparable to units.ONE.
         """
-        return self.__unit__.is_compatible( units.ONE )
+        return self._unit.is_compatible( units.ONE )
     
     #emulate numeric behaviour
     
@@ -199,12 +199,12 @@ class Quantity:
         """
         assert(isinstance(other, Quantity))
         # check if the units are comparable
-        if( not Quantity.__unitComparsion( self.__unit__, other.__unit__ ) ):
-            raise qexceptions.ConversionException( other.__unit__, 
-                "is not compatible to "+str( self.__unit__ ) )
+        if( not Quantity._unitComparsion( self._unit, other._unit ) ):
+            raise qexceptions.ConversionException( other._unit, 
+                "is not compatible to "+str( self._unit ) )
         # get the other quantity in this unit
-        result = self.__value__ + other.get_value( self.__unit__ )
-        return Quantity( self.__unit__, result )
+        result = self._value + other.get_value( self._unit )
+        return Quantity( self._unit, result )
     
     def __sub__( self, other ):
         """! @brief Get the difference of another instance of Quantity and this instance.
@@ -229,8 +229,8 @@ class Quantity:
                       both quantities.
         """
         assert(isinstance(other, Quantity))
-        newUnit  = self.__unit__ * other.__unit__
-        newValue = self.__value__ * other.__value__
+        newUnit  = self._unit * other._unit
+        newValue = self._value * other._value
         return Quantity( newUnit, newValue )
     
     def __pow__( self, other ):
@@ -245,16 +245,16 @@ class Quantity:
               @see units.Unit.__pow__
         """
         assert(isinstance(other, Quantity))
-        if( not Quantity.__unitComparsion( other.get_default_unit(), 
+        if( not Quantity._unitComparsion( other.get_default_unit(), 
             units.ONE ) ):
-            raise qexceptions.ConversionException( self.__unit__, 
+            raise qexceptions.ConversionException( self._unit, 
                 "The argument is not comparable to a dimensionless "
                 +"quantity "
-                +str( other.__unit__ ) )
-        other   = other.__value__ 
+                +str( other._unit ) )
+        other   = other._value 
         
-        newValue = self.__value__ ** other
-        newUnit  = self.__unit__ ** other
+        newValue = self._value ** other
+        newUnit  = self._unit ** other
         return Quantity( newUnit, newValue )
     
     def __div__( self, other ):
@@ -270,8 +270,8 @@ class Quantity:
                       both quantities.
         """
         assert(isinstance(other, Quantity))
-        newUnit  = self.__unit__ / other.__unit__
-        newValue = self.__value__ / other.__value__
+        newUnit  = self._unit / other._unit
+        newValue = self._value / other._value
         return Quantity( newUnit, newValue )
     
     def __radd__( self, other ):
@@ -298,12 +298,12 @@ class Quantity:
         # convert to a dimensionless type
         assert(isinstance(other, Quantity))
         # check if the units are comparable
-        if( not Quantity.__unitComparsion( self.__unit__, other.__unit__) ):
-            raise qexceptions.ConversionException( other.__unit__, 
-                "is not compatible to "+str( self.__unit__ ) )
+        if( not Quantity._unitComparsion( self._unit, other._unit) ):
+            raise qexceptions.ConversionException( other._unit, 
+                "is not compatible to "+str( self._unit ) )
         # get the other quantity in this unit
-        result = other.get_value( self.__unit__ ) - self.__value__
-        return Quantity( self.__unit__, result )
+        result = other.get_value( self._unit ) - self._value
+        return Quantity( self._unit, result )
     
     def __rmul__( self, other ):
         """! @brief Get the product of this instance of Quantity and another value.
@@ -314,8 +314,8 @@ class Quantity:
                       both quantities.
         """
         assert(isinstance(other, Quantity))
-        newValue = other.__value__ * self.__value__
-        newUnit  = other.__unit__ * self.__unit__
+        newValue = other._value * self._value
+        newUnit  = other._unit * self._unit
         return Quantity( newUnit, newValue )
     
     def __rdiv__( self, other ):
@@ -327,8 +327,8 @@ class Quantity:
                       both quantities.
         """
         assert(isinstance( other, Quantity ) )
-        newValue = other.__value__ / self.__value__
-        newUnit  = other.__unit__ / self.__unit__
+        newValue = other._value / self._value
+        newUnit  = other._unit / self._unit
         return Quantity( newUnit, newValue )
     
     def __rpow__( self, other ):
@@ -343,11 +343,11 @@ class Quantity:
                          comparable to units.ONE.
         """
         assert(isinstance(other, Quantity))
-        if( not Quantity.__unitComparsion( self.__unit__, units.ONE) ):
+        if( not Quantity._unitComparsion( self._unit, units.ONE) ):
             raise qexceptions.ConversionException( self, 
                                                   "this unit is not"+
                                                   " dimensionless!" )
-        return other ** self.__value__
+        return other ** self._value
     
     def __iadd__( self, other ):
         """! @brief Add the argument to this instance.
@@ -359,8 +359,8 @@ class Quantity:
         assert(isinstance(other, Quantity))
         result = self + other
         # assign the values
-        self.__unit__  = result.__unit__
-        self.__value__ = result.__value__
+        self._unit  = result._unit
+        self._value = result._value
         return self
     
     def __isub__( self, other ):
@@ -373,8 +373,8 @@ class Quantity:
         assert(isinstance(other, Quantity))
         result = self - other
         # assign the values
-        self.__unit__  = result.__unit__
-        self.__value__ = result.__value__
+        self._unit  = result._unit
+        self._value = result._value
         return self
     
     def __imul__( self, other ):
@@ -385,8 +385,8 @@ class Quantity:
         assert(isinstance(other, Quantity))
         result = self * other
         # assign the values
-        self.__unit__    = result.__unit__
-        self.__value__   = result.__value__
+        self._unit    = result._unit
+        self._value   = result._value
         return self
     
     def __idiv__( self, other ):
@@ -397,8 +397,8 @@ class Quantity:
         assert(isinstance(other, Quantity))
         result = self / other
         # assign the values
-        self.__unit__    = result.__unit__
-        self.__value__   = result.__value__
+        self._unit    = result._unit
+        self._value   = result._value
         return self
     
     def __ipow__( self, other ):
@@ -409,8 +409,8 @@ class Quantity:
         assert(isinstance(other, Quantity))
         result = self ** other
         # assign the values
-        self.__unit__    = result.__unit__
-        self.__value__   = result.__value__
+        self._unit    = result._unit
+        self._value   = result._value
         return self
     
     def __neg__( self ):
@@ -419,21 +419,21 @@ class Quantity:
               @return A new instance of Quantity representing the negative of
                       this quantity.
         """
-        return Quantity( self.__unit__, -self.__value__)
+        return Quantity( self._unit, -self._value)
     
     def __pos__( self ):
         """! @brief Copy this instance.
               @param self
               @return A copy of the current instance.
         """
-        return Quantity( self.__unit__, self.__value__)
+        return Quantity( self._unit, self._value)
     
     def __abs__( self ):
         """! @brief Get the absolute value of this Quantity.
               @param self
               @return The absolute value of this quantity.
         """
-        return Quantity( self.__unit__, abs( self.__value__ ) )
+        return Quantity( self._unit, abs( self._value ) )
     
     def __invert__( self ):
         """! @brief Return the inverted instance of this Quantity.
@@ -442,7 +442,7 @@ class Quantity:
               @param self
               @return The inverted quantity.
         """
-        return Quantity( ~self.__unit__, ~self.__value__)
+        return Quantity( ~self._unit, ~self._value)
     
     def __complex__( self ):
         """! @brief Cast this instance to the numeric type complex.
@@ -454,7 +454,7 @@ class Quantity:
         if(Quantity.is_strict() and self.get_default_unit() != units.ONE):
             raise qexceptions.ConversionException(
                 "Only dimensionless quantities can be converted to complex")
-        return complex( self.__value__ )
+        return complex( self._value )
     
     def __long__( self ):
         """! @brief Cast this instance to the numeric type long.
@@ -466,7 +466,7 @@ class Quantity:
         if(Quantity.is_strict() and self.get_default_unit() != units.ONE):
             raise qexceptions.ConversionException(
                 "Only dimensionless quantities can be converted to long")
-        return long( self.__value__ )
+        return long( self._value )
     
     def __float__( self ):
         """! @brief Cast this instance to the numeric type float.
@@ -480,7 +480,7 @@ class Quantity:
         if(Quantity.is_strict() and self.get_default_unit() != units.ONE):
             raise qexceptions.ConversionException(
                 "Only dimensionless quantities can be converted to float")
-        return float( self.__value__ )
+        return float( self._value )
     
     def __int__( self ):
         """! @brief Cast this instance to the numeric type int.
@@ -492,7 +492,7 @@ class Quantity:
         if(Quantity.is_strict() and self.get_default_unit() != units.ONE):
             raise qexceptions.ConversionException(
                 "Only dimensionless quantities can be converted to int")
-        return int( self.__value__ )
+        return int( self._value )
     
     def __str__( self ):
         """! @brief Get a string describing this Quantity.
@@ -501,7 +501,7 @@ class Quantity:
               @param self
               @return A string describing this quantity.
         """
-        return str( self.__value__ )+" "+str( self.__unit__ )
+        return str( self._value )+" "+str( self._unit )
     
     def __lt__( self, other ):
         """! @brief Check, if this instance is less than the argument.
@@ -515,12 +515,12 @@ class Quantity:
         if(not isinstance(other, Quantity)):
             a,b = coerce(self,other)
             return a < b
-        if( not Quantity.__unitComparsion( self.__unit__, other.__unit__) ):
+        if( not Quantity._unitComparsion( self._unit, other._unit) ):
             raise qexceptions.ConversionException( self, 
                                                   " is not comparable to "
                                                   +str( other ) )
-        otherValue = other.get_value( self.__unit__ )
-        return self.__value__ < otherValue
+        otherValue = other.get_value( self._unit )
+        return self._value < otherValue
     
     def __le__( self, other ):
         """! @brief Check, if this instance is less or equal to the argument.
@@ -534,12 +534,12 @@ class Quantity:
         if(not isinstance(other, Quantity)):
             a,b = coerce(self,other)
             return a <= b
-        if( not Quantity.__unitComparsion( self.__unit__, other.__unit__ ) ):
+        if( not Quantity._unitComparsion( self._unit, other._unit ) ):
             raise qexceptions.ConversionException( self, 
                                                   " is not comparable to "
                                                   +str( other ) )
-        otherValue = other.get_value( self.__unit__ )
-        return self.__value__ <= otherValue
+        otherValue = other.get_value( self._unit )
+        return self._value <= otherValue
     
     def __eq__( self, other ):
         """! @brief Check, if this instance is equal to the argument.
@@ -554,10 +554,10 @@ class Quantity:
                 return a == b
             except NotImplementedError:
                 return False
-        if( not Quantity.__unitComparsion( self.__unit__, other.__unit__ ) ):
+        if( not Quantity._unitComparsion( self._unit, other._unit ) ):
             return False
-        otherValue = other.get_value( self.__unit__ )
-        return self.__value__ == otherValue
+        otherValue = other.get_value( self._unit )
+        return self._value == otherValue
     
     def __ne__( self, other ):
         """! @brief Check, if this instance is not equal to the argument.
@@ -569,10 +569,10 @@ class Quantity:
         if(not isinstance(other, Quantity)):
             a,b = coerce(self,other)
             return a != b
-        if( not Quantity.__unitComparsion( self.__unit__, other.__unit__ ) ):
+        if( not Quantity._unitComparsion( self._unit, other._unit ) ):
             return True
-        otherValue = other.get_value( self.__unit__ )
-        return self.__value__ != otherValue
+        otherValue = other.get_value( self._unit )
+        return self._value != otherValue
     
     def __gt__( self, other ):
         """! @brief Check, if this instance is greater than the argument.
@@ -586,12 +586,12 @@ class Quantity:
         if(not isinstance(other, Quantity)):
             a,b = coerce(self,other)
             return a > b
-        if( not Quantity.__unitComparsion( self.__unit__, other.__unit__ ) ):
+        if( not Quantity._unitComparsion( self._unit, other._unit ) ):
             raise qexceptions.ConversionException( self, 
                                                   " is not comparable to "
                                                   +str( other ) )
-        otherValue = other.get_value( self.__unit__ )
-        return self.__value__ > otherValue
+        otherValue = other.get_value( self._unit )
+        return self._value > otherValue
     
     def __ge__( self, other ):
         """! @brief Check, if this instance is greater or equal to the argument.
@@ -605,12 +605,12 @@ class Quantity:
         if(not isinstance(other, Quantity)):
             a,b = coerce(self,other)
             return a >= b
-        if( not Quantity.__unitComparsion( self.__unit__, other.__unit__ ) ):
+        if( not Quantity._unitComparsion( self._unit, other._unit ) ):
             raise qexceptions.ConversionException( self, 
                                                   " is not comparable to "
                                                   +str( other ) )
-        otherValue = other.get_value( self.__unit__ )
-        return self.__value__ >= otherValue
+        otherValue = other.get_value( self._unit )
+        return self._value >= otherValue
     
     def __cmp__( self, other ):
         """! @brief Compare two instances of quantity.
@@ -625,7 +625,7 @@ class Quantity:
         if(not isinstance(other, Quantity)):
             a,b = coerce(self,other)
             return cmp(a,b)
-        if( not Quantity.__unitComparsion( self.__unit__, other.__unit__ ) ):
+        if( not Quantity._unitComparsion( self._unit, other._unit ) ):
             raise qexceptions.ConversionException( self, 
                                                   " is not comparable to "
                                                   +str( other ) )
@@ -645,14 +645,14 @@ class Quantity:
               @return A string that represents the serialized form
                       of this instance.
         """
-        return ( self.__unit__, self.__value__ )
+        return ( self._unit, self._value )
     
     def __setstate__( self, state ):
         """! @brief Deserialization using pickle.
               @param self
               @param state The state of the object.
         """
-        self.__unit__, self.__value__ = state
+        self._unit, self._value = state
     
     def value_of( other ):
         """! @brief Factory for generating quantities.
@@ -677,7 +677,7 @@ class Quantity:
         return Quantity( units.ONE, other )
     value_of = staticmethod( value_of )
     
-    def __accuracy( value ):
+    def _accuracy( value ):
         """! @brief Helper method, to increase the accuracy of integer operations.
               As soon an int or long is provided, it is converted to a
               rational number.
@@ -687,7 +687,7 @@ class Quantity:
             return arithmetic.RationalNumber( value, 1 )
         else:
             return value
-    __accuracy = staticmethod( __accuracy )
+    _accuracy = staticmethod( _accuracy )
     
     #Support for numpy
     
@@ -704,7 +704,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.arccos( self.__value__ )
+        value = numpy.arccos( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -721,7 +721,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.arccosh( self.__value__ )
+        value = numpy.arccosh( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -738,7 +738,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.arcsin( self.__value__ )
+        value = numpy.arcsin( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -755,7 +755,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.arcsinh( self.__value__ )
+        value = numpy.arcsinh( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -772,7 +772,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.arctan( self.__value__ )
+        value = numpy.arctan( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -789,7 +789,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.arctanh( self.__value__ )
+        value = numpy.arctanh( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -806,7 +806,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.cos( self.__value__ )
+        value = numpy.cos( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -823,7 +823,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.cosh( self.__value__ )
+        value = numpy.cosh( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -840,7 +840,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.tan( self.__value__ )
+        value = numpy.tan( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -857,7 +857,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.tanh( self.__value__ )
+        value = numpy.tanh( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -874,7 +874,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.log10( self.__value__ )
+        value = numpy.log10( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -891,7 +891,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.log2( self.__value__ )
+        value = numpy.log2( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -908,7 +908,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.sin( self.__value__ )
+        value = numpy.sin( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -925,7 +925,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.sinh( self.__value__ )
+        value = numpy.sinh( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -935,8 +935,8 @@ class Quantity:
               @param self
               @return The Square Root of this quantity.
         """
-        value = numpy.sqrt( self.__value__ )
-        unit  = numpy.sqrt( self.__unit__ )
+        value = numpy.sqrt( self._value )
+        unit  = numpy.sqrt( self._unit )
         
         return Quantity( unit, value )
     
@@ -954,9 +954,19 @@ class Quantity:
               @param self
               @return The absolute value of this quantity.
         """
-        value = numpy.fabs( self.__value__ )
+        value = numpy.fabs( self._value )
 
-        return Quantity( self.__unit__, value )
+        return Quantity( self._unit, value )
+
+    def absolute( self ):
+        """! @brief This method provides the broadcast interface for
+              numpy.absolute.
+              @param self
+              @return The absolute value of this quantity.
+        """
+        value = numpy.absolute( self._value )
+
+        return Quantity( self._unit, value )
     
     def floor( self ):
         """! @brief This method provides the broadcast interface for
@@ -964,9 +974,9 @@ class Quantity:
               @param self
               @return The largest integer less than or equal to this quantity.
         """
-        value = numpy.floor( self.__value__ )
+        value = numpy.floor( self._value )
 
-        return Quantity( self.__unit__, value )
+        return Quantity( self._unit, value )
     
     def ceil( self ):
         """! @brief This method provides the broadcast interface for
@@ -975,9 +985,9 @@ class Quantity:
               @return The largest integer greater than or equal to this 
                       quantity.
         """
-        value = numpy.ceil( self.__value__ )
+        value = numpy.ceil( self._value )
 
-        return Quantity( self.__unit__, value )
+        return Quantity( self._unit, value )
     
     def exp( self ):
         """! @brief This method provides the broadcast interface for
@@ -992,7 +1002,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
 
-        value = numpy.exp( self.__value__ )
+        value = numpy.exp( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -1009,7 +1019,7 @@ class Quantity:
                     self.get_default_unit(), 
                     "Unit is not dimensionless " ) )
                     
-        value = numpy.log( self.__value__ )
+        value = numpy.log( self._value )
 
         return Quantity( units.ONE, value )
     
@@ -1032,7 +1042,7 @@ class Quantity:
                     "Units are not dimensionless " ) )
         
         other_val = other.get_value(other.get_default_unit())
-        value = numpy.arctan2( self.__value__, other_val )
+        value = numpy.arctan2( self._value, other_val )
 
         return Quantity( units.ONE, value )
     
@@ -1055,9 +1065,9 @@ class Quantity:
               @param self
               @return This quantity.
         """
-        value = numpy.conjugate( self.__value__ )
+        value = numpy.conjugate( self._value )
 
-        return Quantity( self.__unit__, value )
+        return Quantity( self._unit, value )
     
     def set_strict(bValue = True):
         """! @brief Turn on/off the strict evaluation of quantities. This will 
@@ -1065,9 +1075,9 @@ class Quantity:
                @param bValue True or False
         """
         if(bValue):
-            Quantity.__STRICT = True
+            Quantity._STRICT = True
         else:
-            Quantity.__STRICT = False
+            Quantity._STRICT = False
     set_strict = staticmethod(set_strict)
             
     def is_strict():
@@ -1076,7 +1086,7 @@ class Quantity:
               implemented.
               @return True (i.e. strict enabled) or False (i.e. strict disabled).
         """
-        return Quantity.__STRICT
+        return Quantity._STRICT
     is_strict = staticmethod(is_strict)
     
     def __coerce__(self, other):

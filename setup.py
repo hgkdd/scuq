@@ -1,5 +1,5 @@
 import os
-from distutils.core import setup
+from setuptools import setup
 import version
 
 ver=''
@@ -12,6 +12,7 @@ setup(name='scuq',
       description='scalar and complex uncertain pysical quantities',
       license='All rights reserved',
       url='http://tu-dresden.de/et/tet',
-	  packages=['scuq'],
+      install_requires=['numpy'],
+      packages=['scuq'],
       data_files=[('scuq', ['scuq/LICENSE'])],
       )

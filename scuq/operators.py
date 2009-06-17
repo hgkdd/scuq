@@ -127,7 +127,7 @@ class UnitOperator:
         return False
     
 
-class __ExpOperator__( UnitOperator ):
+class _ExpOperator( UnitOperator ):
     """! @brief       This class provides an Interface for exponential operators.
        It is used as helper for the LogOperator.
       @note Instances of this class can be serialized using pickle.
@@ -142,8 +142,8 @@ class __ExpOperator__( UnitOperator ):
               @param exponent the exponent.
         """
         assert( operator.isNumberType( exponent ) )
-        self.__exponent__ = exponent
-        self.__logExponent__ = numpy.log( exponent )
+        self._exponent = exponent
+        self._logExponent = numpy.log( exponent )
     
     
     def __invert__( self ):
@@ -177,7 +177,7 @@ class __ExpOperator__( UnitOperator ):
               @return The converted value
         """
         assert( operator.isNumberType( value ) )
-        return numpy.exp( self.__logExponent__ * float( value ) )
+        return numpy.exp( self._logExponent * float( value ) )
     
     def get_exponent( self ):
         """! @brief Get the base of logarithm.
@@ -187,7 +187,7 @@ class __ExpOperator__( UnitOperator ):
               @param self
               @return The base of the logarithm
         """
-        return self.__exponent__
+        return self._exponent
     
     def __str__( self ):
         """! @brief Represent this operation by a string.
@@ -195,7 +195,7 @@ class __ExpOperator__( UnitOperator ):
               @param self
               @return A string describing this operation.
         """
-        return "^"+str( self.__exponent__ )
+        return "^"+str( self._exponent )
     
     def __getstate__( self ):
         """! @brief Serialization using pickle.
@@ -203,23 +203,23 @@ class __ExpOperator__( UnitOperator ):
               @return A string that represents the serialized form
                       of this instance.
         """
-        return ( self.__exponent__ )
+        return ( self._exponent )
     
     def __setstate__( self, state ):
         """! @brief Deserialization using pickle.
               @param self
               @param state The state of the object.
         """
-        self.__exponent__ = state
+        self._exponent = state
     
     def __eq__( self, other ):
         """! @brief Test for equality.
               @param self
               @param other Another UnitOperator.
         """
-        if( not isinstance( other, __ExpOperator__ ) ):
+        if( not isinstance( other, _ExpOperator ) ):
             return False
-        return self.__exponent__ == other.__exponent__
+        return self._exponent == other._exponent
 
 class LogOperator( UnitOperator ):
     """! @brief       This class provides an interface for logarithmic operators.
@@ -234,8 +234,8 @@ class LogOperator( UnitOperator ):
               @param base The base of the logarithm.
         """
         assert( operator.isNumberType( base ) )
-        self.__base__ = base
-        self.__logBase__ = numpy.log( base )
+        self._base = base
+        self._logBase = numpy.log( base )
     
     
     def __invert__( self ):
@@ -246,7 +246,7 @@ class LogOperator( UnitOperator ):
               @param self The current instance of this class.
               @return The inverse Operation of the current Operation.
         """
-        return __ExpOperator__( self.get_base() )
+        return _ExpOperator( self.get_base() )
     
     
     def is_linear( self ):
@@ -272,7 +272,7 @@ class LogOperator( UnitOperator ):
               @return The converted value
         """
         assert( operator.isNumberType( value ) )
-        return numpy.log( float( value ) )/self.__logBase__
+        return numpy.log( float( value ) )/self._logBase
     
     def get_base( self ):
         """! @brief Get the base of this logarithm.
@@ -282,7 +282,7 @@ class LogOperator( UnitOperator ):
               @param self
               @return The base of the logarithm
         """
-        return self.__base__
+        return self._base
     
     def __str__( self ):
         """! @brief Represent this operation by a string.
@@ -290,7 +290,7 @@ class LogOperator( UnitOperator ):
               @param self
               @return A string describing this operation.
         """
-        return "_"+str( self.__base__ )
+        return "_"+str( self._base )
     
     def __getstate__( self ):
         """! @brief Serialization using pickle.
@@ -298,15 +298,15 @@ class LogOperator( UnitOperator ):
               @return A string that represents the serialized form
                       of this instance.
         """
-        return ( self.__base__ )
+        return ( self._base )
     
     def __setstate__( self, state ):
         """! @brief Deserialization using pickle.
               @param self
               @param state The state of the object.
         """
-        self.__base__ = state
-        self.__logBase__ = numpy.log( self.__base__ )
+        self._base = state
+        self._logBase = numpy.log( self._base )
     
     def __eq__( self, other ):
         """! @brief Test for equality.
@@ -315,7 +315,7 @@ class LogOperator( UnitOperator ):
         """
         if( not isinstance( other, LogOperator ) ):
             return False
-        return self.__base__ == other.__base__
+        return self._base == other._base
     
 class AddOperator( UnitOperator ):
     """! @brief       This class provides an Interface for offset operators.
@@ -324,7 +324,7 @@ class AddOperator( UnitOperator ):
       @note Instances of this class can be serialized using pickle.
     """
     
-    def __isNegative( positvieOp, negativeOp ):
+    def _isNegative( positvieOp, negativeOp ):
         """! @brief Helper method to optimize comparsions.
               @param negativeOp An AddOperator.
               @param positvieOp An AddOperator.
@@ -343,7 +343,7 @@ class AddOperator( UnitOperator ):
             return False
         
         return ( posOffset == -negOffset )
-        __isNegative = staticmethod( __isNegative )
+        _isNegative = staticmethod( _isNegative )
         
     def __init__( self, offset ):
         """! @brief Default constructor.
@@ -354,7 +354,7 @@ class AddOperator( UnitOperator ):
               @param offset The offset of this operator.
         """
         assert( operator.isNumberType( offset ) )
-        self.__offset__ = offset
+        self._offset = offset
     
     def __mul__( self, otherOperator ):
         """! @brief Perform the current operation on another operator.
@@ -370,7 +370,7 @@ class AddOperator( UnitOperator ):
         assert( isinstance( otherOperator, UnitOperator ) )
         if( isinstance( otherOperator, AddOperator ) ):
             # optimize for identity
-            if( AddOperator.__isNegative( self, otherOperator ) ):
+            if( AddOperator._isNegative( self, otherOperator ) ):
                 return IDENTITY
             
             otherOffset = otherOperator.get_offset()
@@ -388,7 +388,7 @@ class AddOperator( UnitOperator ):
               @param self
               @return The inverse operation of this operation.
         """
-        return AddOperator( -self.__offset__ )
+        return AddOperator( -self._offset )
     
     
     def is_linear( self ):
@@ -421,7 +421,7 @@ class AddOperator( UnitOperator ):
               @param self
               @return The offset of this operator
         """
-        return self.__offset__
+        return self._offset
     
     def __str__( self ):
         """! @brief Represent this operation by a string.
@@ -429,8 +429,8 @@ class AddOperator( UnitOperator ):
               @param self
               @return A string describing this operation.
         """
-        offset = abs( self.__offset__ )
-        if( self.__offset__ < 0.0 ):
+        offset = abs( self._offset )
+        if( self._offset < 0.0 ):
             return "-"+str( offset )
         else:
             return "+"+str( offset )
@@ -441,14 +441,14 @@ class AddOperator( UnitOperator ):
               @return A string that represents the serialized form
                       of this instance.
         """
-        return ( self.__offset__ )
+        return ( self._offset )
     
     def __setstate__( self, state ):
         """! @brief Deserialization using pickle.
               @param self
               @param state The state of the object.
         """
-        self.__offset__ = state
+        self._offset = state
     
     def __eq__( self, other ):
         """! @brief Test for equality.
@@ -457,7 +457,7 @@ class AddOperator( UnitOperator ):
         """
         if( not isinstance( other, AddOperator ) ):
             return False
-        return self.__offset__ == other.__offset__
+        return self._offset == other._offset
 
 class MultiplyOperator( UnitOperator ):
     """! @brief       This class provides an Interface for factor operators.
@@ -466,7 +466,7 @@ class MultiplyOperator( UnitOperator ):
       @note Instances of this class can be serialized using pickle.
     """
     
-    def __isNegative( positvieOp, negativeOp ):
+    def _isNegative( positvieOp, negativeOp ):
         """! @brief Helper method to optimize comparsions.
               @param negativeOp An MultiplyOperator.
               @param positvieOp An MultiplyOperator.
@@ -485,7 +485,7 @@ class MultiplyOperator( UnitOperator ):
             return False
         
         return ( negFactor == ~posFactor )
-        __isNegative = staticmethod( __isNegative )
+        _isNegative = staticmethod( _isNegative )
     
     def __init__( self, factor ):
         """! @brief Default constructor.
@@ -496,7 +496,7 @@ class MultiplyOperator( UnitOperator ):
               @param factor The offset of this operator.
         """
         assert( operator.isNumberType( factor ) )
-        self.__factor__ = factor
+        self._factor = factor
     
     
     def __mul__( self, otherOperator ):
@@ -513,7 +513,7 @@ class MultiplyOperator( UnitOperator ):
         """
         assert( isinstance( otherOperator, UnitOperator ) )
         if( isinstance( otherOperator, MultiplyOperator ) ):
-            if( MultiplyOperator.__isNegative( self, otherOperator ) ):
+            if( MultiplyOperator._isNegative( self, otherOperator ) ):
                 return IDENTITY
             
             otherFactor = otherOperator.get_factor()
@@ -532,15 +532,15 @@ class MultiplyOperator( UnitOperator ):
               @return The inverse Operation of the current Operation.
         """
         # Optimize for integer accuracy
-        if( isinstance( self.__factor__, long ) or 
-            isinstance( self.__factor__, int ) ):
+        if( isinstance( self._factor, long ) or 
+            isinstance( self._factor, int ) ):
             return MultiplyOperator( arithmetic.RationalNumber( 1L, 
-                                    self.__factor__ ) )
+                                    self._factor ) )
         # Optimize rational factors
-        if( isinstance( self.__factor__, arithmetic.RationalNumber ) ):
-            return MultiplyOperator( ~self.__factor__ )
+        if( isinstance( self._factor, arithmetic.RationalNumber ) ):
+            return MultiplyOperator( ~self._factor )
         # no optimization possible for other types
-        return MultiplyOperator( 1.0 / self.__factor__ )
+        return MultiplyOperator( 1.0 / self._factor )
     
     
     def is_linear( self ):
@@ -563,7 +563,7 @@ class MultiplyOperator( UnitOperator ):
               @return The converted value.
         """
         assert( operator.isNumberType( value ) )
-        return value * self.__factor__
+        return value * self._factor
     
     
     def get_factor( self ):
@@ -574,7 +574,7 @@ class MultiplyOperator( UnitOperator ):
               @param self
               @return The factor of this operator.
         """
-        return self.__factor__
+        return self._factor
     
     def __str__( self ):
         """! @brief Represent this operation by a string.
@@ -582,7 +582,7 @@ class MultiplyOperator( UnitOperator ):
               @param self
               @return A string describing this operation.
         """
-        return "*"+str( self.__factor__ )
+        return "*"+str( self._factor )
     
     def __getstate__( self ):
         """! @brief Serialization using pickle.
@@ -590,14 +590,14 @@ class MultiplyOperator( UnitOperator ):
               @return A string that represents the serialized form
                       of this instance.
         """
-        return ( self.__factor__ )
+        return ( self._factor )
     
     def __setstate__( self, state ):
         """! @brief Deserialization using pickle.
               @param self
               @param state The state of the object.
         """
-        self.__factor__ = state
+        self._factor = state
     
     def __eq__( self, other ):
         """! @brief Test for equality.
@@ -606,7 +606,7 @@ class MultiplyOperator( UnitOperator ):
         """
         if( not isinstance( other, MultiplyOperator ) ):
             return False
-        return self.__factor__ == other.__factor__
+        return self._factor == other._factor
     
 
 class CompoundOperator( UnitOperator ):
@@ -629,8 +629,8 @@ class CompoundOperator( UnitOperator ):
         """
         assert( isinstance( firstOp, UnitOperator ) )
         assert( isinstance( secondOp, UnitOperator ) )
-        self.__firstOperator__ = firstOp
-        self.__secondOperator__ = secondOp
+        self._firstOperator = firstOp
+        self._secondOperator = secondOp
     
     
     def __invert__( self ):
@@ -644,8 +644,8 @@ class CompoundOperator( UnitOperator ):
               @param self
               @return The inverse operation of the current operation.
         """
-        return CompoundOperator( self.__secondOperator__.__invert__(), 
-                    self.__firstOperator__.__invert__() )
+        return CompoundOperator( self._secondOperator.__invert__(), 
+                    self._firstOperator.__invert__() )
     
     
     def is_linear( self ):
@@ -656,8 +656,8 @@ class CompoundOperator( UnitOperator ):
               @param self The current instance of this class.
               @return <tt>True</tt> if both underlying operators are linear.
         """
-        return ( self.__firstOperator__.is_linear() 
-            and self.__secondOperator__.is_linear() )
+        return ( self._firstOperator.is_linear() 
+            and self._secondOperator.is_linear() )
 
     
     def convert( self, value ):
@@ -669,8 +669,8 @@ class CompoundOperator( UnitOperator ):
               @param value The value to convert.
               @return the converted value
         """
-        innerValue = self.__firstOperator__.convert( value )
-        return self.__secondOperator__.convert( innerValue )
+        innerValue = self._firstOperator.convert( value )
+        return self._secondOperator.convert( innerValue )
     
     def __str__( self ):
         """! @brief Represent this operation by a string.
@@ -678,8 +678,8 @@ class CompoundOperator( UnitOperator ):
               @param self
               @return A string describing this operation.
         """
-        return str( self.__firstOperator__ )+\
-               "("+str( self.__secondOperator__ )+")"
+        return str( self._firstOperator )+\
+               "("+str( self._secondOperator )+")"
     
     def __getstate__( self ):
         """! @brief Serialization using pickle.
@@ -687,14 +687,14 @@ class CompoundOperator( UnitOperator ):
               @return A string that represents the serialized form
                       of this instance.
         """
-        return ( self.__firstOperator__, self.__secondOperator__ )
+        return ( self._firstOperator, self._secondOperator )
     
     def __setstate__( self, state ):
         """! @brief Deserialization using pickle.
               @param self
               @param state The state of the object.
         """
-        self.__firstOperator__, self.__secondOperator__ = state
+        self._firstOperator, self._secondOperator = state
     
     def __eq__( self, other ):
         """! @brief Test for equality.
@@ -703,8 +703,8 @@ class CompoundOperator( UnitOperator ):
         """
         if( not isinstance( other, CompoundOperator ) ):
             return False
-        return ( self.__firstOperator__ == other.__firstOperator__ and
-            self.__secondOperator__ == other.__secondOperator__ )
+        return ( self._firstOperator == other._firstOperator and
+            self._secondOperator == other._secondOperator )
             
 class Identity( UnitOperator ):
     """! @brief       This class provides an Interface for the identity Operator.
