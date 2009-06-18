@@ -33,7 +33,7 @@ def set_default_model( physicalModel ):
       @see PhysicalModel.
     """
     assert( isinstance( physicalModel, PhysicalModel ) )
-    __UNITS_MANAGER__.set_model( physicalModel )
+    _UNITS_MANAGER.set_model( physicalModel )
     
 def get_default_model():
     """! @brief       Get the physical model currently in use.
@@ -41,7 +41,7 @@ def get_default_model():
        @return The physical model that is currently in use.
        @see PhysicalModel.
     """
-    return __UNITS_MANAGER__.get_model()
+    return _UNITS_MANAGER.get_model()
     
 class PhysicalModel:
     """! @brief       This class models the abstract interface for physical models.
@@ -85,7 +85,7 @@ class Dimension:
     # All Operations that can be performed on units are also
     # applicable to Dimensions. Therefore each dimension is
     # represented internally by a pseudo Unit. 
-    __pseudoUnit__ = None
+    _pseudoUnit = None
     
     def __init__( self, value ):
         """! @brief This is the default constructor.
@@ -99,11 +99,11 @@ class Dimension:
         # Because physical dimensions could also be created using operations,
         # the pseudo unit can also be assigned.
         if( isinstance( value, Unit ) ):
-            self.__pseudoUnit__ = value
+            self._pseudoUnit = value
         else:
             assert( isinstance( value, str ) )
             assert( len( value ) > 0 )
-            self.__pseudoUnit__ = BaseUnit( value )
+            self._pseudoUnit = BaseUnit( value )
 
     def __str__( self ):
         """! @brief Return a string describing the physical dimension.
@@ -113,7 +113,7 @@ class Dimension:
                @return A string describing this dimension.
                @see Unit.__str__
         """
-        return str( self.__pseudoUnit__ )
+        return str( self._pseudoUnit )
     
     def __mul__( self, other ):
         """! @brief Return a dimension that describes the product of the current and 
@@ -123,7 +123,7 @@ class Dimension:
               @return A new dimension representing the product.
         """
         assert( isinstance( other, Dimension ) )
-        return Dimension( self.__pseudoUnit__ * other.__pseudoUnit__ )
+        return Dimension( self._pseudoUnit * other._pseudoUnit )
     
     def __div__( self, other ):
         """! @brief Return a dimension that describes the fraction of the current and 
@@ -133,7 +133,7 @@ class Dimension:
               @return A new dimension representing the fraction.
         """
         assert( isinstance( other, Dimension ) )
-        return Dimension( self.__pseudoUnit__ / other.__pseudoUnit__ )
+        return Dimension( self._pseudoUnit / other._pseudoUnit )
     
     def __pow__( self, value ):
         """! @brief Return a dimension that represents the current dimension 
@@ -145,7 +145,7 @@ class Dimension:
         assert( isinstance( value, int ) or isinstance( value, long ) )
         value = long( value )
         
-        return Dimension( self.__pseudoUnit__ ** value )
+        return Dimension( self._pseudoUnit ** value )
     
     def root( self, value ):
         """! @brief Return a dimension that represents the root of the 
@@ -157,7 +157,7 @@ class Dimension:
         assert( isinstance( value, int ) or isinstance( value, long ) )
         value = long( value )
         
-        return Dimension( self.__pseudoUnit__.root( value ) )
+        return Dimension( self._pseudoUnit.root( value ) )
 
     def __eq__( self, other ):
         """! @brief This function checks if two dimensions are equal.
@@ -166,7 +166,7 @@ class Dimension:
               @return True, if the dimensions are equal.    
         """
         assert( isinstance( other, Dimension ) )
-        return self.__pseudoUnit__ == other.__pseudoUnit__
+        return self._pseudoUnit == other._pseudoUnit
     
     def get_symbol( self ):
         """! @brief Same as __eq__
@@ -181,14 +181,14 @@ class Dimension:
               @return A string that represents the serialized form
                       of this instance.
         """
-        return ( self.__pseudoUnit__ )
+        return ( self._pseudoUnit )
     
     def __setstate__( self, state ):
         """! @brief Deserialization using pickle.
               @param self
               @param state The state of the object.
         """
-        self.__pseudoUnit__ = state
+        self._pseudoUnit = state
 
 class UnitsManager:
     """! @brief       This manages the alternate and base units as well as the physical 
@@ -199,20 +199,20 @@ class UnitsManager:
     """
     
     ## Physical Model used for units.
-    __physicalModel     = None
+    _physicalModel     = None
     
     ## Dictionary of BaseUnits and AlternateUnits created.
     # 
     # It maps the symbol from the respective base or alternate unit 
     # to an instance of the BaseUnit created.
-    __unitsDictionary__ = {None:None}
+    _unitsDictionary = {None:None}
     
 
     def __init__( self ):
         """! @brief This is the default constructor.
               @param self
         """
-        self.__unitsDictionary__.clear()
+        self._unitsDictionary.clear()
         
     def addUnit( self, unit ):
         """! @brief This is a helper function to add the units to the dictionary.
@@ -228,7 +228,7 @@ class UnitsManager:
             raise qexceptions.UnitExistsException( unit, 
                   "The following base unit has already been defined" )
         
-        self.__unitsDictionary__[unit.get_symbol()] = unit
+        self._unitsDictionary[unit.get_symbol()] = unit
     
 
     def existsUnit( self, unit ):
@@ -245,7 +245,7 @@ class UnitsManager:
         assert( ( isinstance( unit, BaseUnit ) 
                 or isinstance( unit, AlternateUnit ) ) \
                 or isinstance( unit, Dimension ) )
-        return self.__unitsDictionary__.has_key( unit.get_symbol() )
+        return self._unitsDictionary.has_key( unit.get_symbol() )
     
     def set_model( self, physicalModel ):
         """! @brief Set the global physical model to be used.
@@ -253,7 +253,7 @@ class UnitsManager:
               @param physicalModel The model to be used.
         """
         assert( isinstance( physicalModel, PhysicalModel ) )
-        self.__physicalModel = physicalModel
+        self._physicalModel = physicalModel
         
     def get_model( self ):
         """! @brief Return the global physical model used.
@@ -261,7 +261,7 @@ class UnitsManager:
               @return The current physical model used.
               @attention This function returns None, if no model is currently in use.
         """
-        return self.__physicalModel
+        return self._physicalModel
         
 
 class Unit:
@@ -314,7 +314,7 @@ class Unit:
         """
         sysUnit = self.get_system_unit()
         if( isinstance( sysUnit, BaseUnit ) ):
-            return __UNITS_MANAGER__.get_model().get_dimension( sysUnit )
+            return _UNITS_MANAGER.get_model().get_dimension( sysUnit )
         if( isinstance( sysUnit, AlternateUnit ) or isinstance( sysUnit, 
                                                  TransformedUnit ) ):
             return sysUnit.get_parent().get_dimension()
@@ -548,7 +548,10 @@ class Unit:
         # Same Base Unit -> convert own to SystemUnit and invert other
         # to SystemUnit
         if( selfUnit == otherUnit ):
-            return unit.to_system_unit() * ( ~self.to_system_unit() )
+            op=unit.to_system_unit() * ( ~self.to_system_unit() )
+            op.fromUnit=selfUnit
+            op.toUnit=unit
+            return op
         
         # last chance: same physical dimension?
         selfDim = self.get_dimension()
@@ -557,12 +560,15 @@ class Unit:
             raise qexceptions.ConversionException( self, 
                 " has not the same physical dimension as "+str( unit ) )
         
-        selfTransform  = self.to_system_unit() * selfUnit.__getTransformOf()
-        otherTransform = unit.to_system_unit() * otherUnit.__getTransformOf()
+        selfTransform  = self.to_system_unit() * selfUnit._getTransformOf()
+        otherTransform = unit.to_system_unit() * otherUnit._getTransformOf()
         
-        return ( ~otherTransform ) * selfTransform
+        op=( ~otherTransform ) * selfTransform
+        op.fromUnit=selfUnit
+        op.toUnit=unit
+        return op
         
-    def __getTransformOf( self ):
+    def _getTransformOf( self ):
         """! @brief Helper function to get the transformation to the system unit.
               This method returns an operator that converts values that have been
               formed with the current unit to its system unit.
@@ -581,13 +587,16 @@ class Unit:
         
         # Renamed unit?
         if( isinstance( self, AlternateUnit ) ):
-            return self.get_parent().__getTransformOf()
+            return self.get_parent()._getTransformOf()
+        # Transformed Unit?
+        if( isinstance( self, TransformedUnit ) ):
+            return self.get_operator_to(self.get_system_unit())
 						
         # Product unit
         operator = operators.IDENTITY
         for i in range( 0, self.get_unitCount() ):
             unit = self.get_unit( i )
-            op   = unit.__getTransformOf()
+            op   = unit._getTransformOf()
             if( not op.is_linear() ):
                 raise qexceptions.ConversionException( unit, 
                                  " has been created using non-linear operation"
@@ -714,7 +723,7 @@ class BaseUnit( Unit ):
         assert( isinstance( symbol, str ) )
         assert( len( symbol ) > 0 )
         self.__symbol__ = symbol
-        __UNITS_MANAGER__.addUnit( self )    
+        _UNITS_MANAGER.addUnit( self )    
     
     def get_symbol( self ):
         """! @brief Return the symbol of this unit.
@@ -778,12 +787,12 @@ class BaseUnit( Unit ):
               @param state The state of the object.
               @exception UnknownUnitException If the unit to be 
               unpickled is not contained in the global repository
-              __UNITS_MANAGER__.
+              _UNITS_MANAGER.
               @see UnitsManager
-              @see __UNITS_MANAGER__
+              @see _UNITS_MANAGER
         """
         self.__symbol__ = state
-        if( not __UNITS_MANAGER__.existsUnit( self ) ):
+        if( not _UNITS_MANAGER.existsUnit( self ) ):
             raise UnknownUnitException( self, " is unknown, and can"
                                            +" therefore not  be unpickled" )
     
@@ -836,13 +845,13 @@ class AlternateUnit( DerivedUnit ):
         assert( isinstance( symbol, str ) )
         assert( len( symbol ) > 0 )
         
-        if ( not parentUnit.get_system_unit().__eq__( parentUnit ) ):
+        if ( not parentUnit.get_system_unit().get_dimension().__eq__( parentUnit.get_dimension() ) ):
             raise TypeError( "ParentUnit has to be a System unit" )
         
         self.__symbol__ = symbol
         self.__parentUnit__ = parentUnit
         
-        __UNITS_MANAGER__.addUnit( self )
+        _UNITS_MANAGER.addUnit( self )
     
 
     def get_parent( self ):
@@ -918,12 +927,12 @@ class AlternateUnit( DerivedUnit ):
               @param state The state of the object.
               @exception UnknownUnitException If the unit to be 
               unpickled is not contained in the global repository
-              __UNITS_MANAGER__.
+              _UNITS_MANAGER.
               @see UnitsManager
-              @see __UNITS_MANAGER__
+              @see _UNITS_MANAGER
         """
         self.__symbol__, self.__parentUnit__ = state
-        if( not __UNITS_MANAGER__.existsUnit( self ) ):
+        if( not _UNITS_MANAGER.existsUnit( self ) ):
             raise UnknownUnitException( self, " is unknown, and can therefore"
                                            +" not be unpickled" )
     
@@ -1656,7 +1665,7 @@ class TransformedUnit( DerivedUnit ):
 
 ## \brief Global units Manager that keeps track of the units and dimensions
 # created.
-__UNITS_MANAGER__ = UnitsManager()
+_UNITS_MANAGER = UnitsManager()
 
 ## Predefined global dimension for the Length.
 LENGTH      = Dimension( "L" )

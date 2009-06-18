@@ -23,7 +23,7 @@ import pickle
 
 # local modules
 import arithmetic
-
+import quantities
 
 class UnitOperator:
     """! @brief       Basic abstract Operator to use on units.
@@ -563,7 +563,10 @@ class MultiplyOperator( UnitOperator ):
               @return The converted value.
         """
         assert( operator.isNumberType( value ) )
-        return value * self._factor
+        newval = value * self._factor
+        if isinstance(value, quantities.Quantity):
+            newval._unit=self.toUnit
+        return newval
     
     
     def get_factor( self ):

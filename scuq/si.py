@@ -75,11 +75,16 @@ class SIModel( units.PhysicalModel ):
                                                 unit )
 
 # Check if unicode is enabled (i.e. if the symbols are shown correctly)
-language, encoding = locale.getdefaultlocale()
-if( string.lower( encoding ) != "utf-8" ):
-    sys.stderr.write( "You should use UTF-8 instead of "+encoding
-                      +" as encoding, or the "
-                      +"SI units won't display correctly\n" )
+# language, encoding = locale.getdefaultlocale()
+# if( string.lower( encoding ) != "utf-8" ):
+#     sys.stderr.write( "You should use UTF-8 instead of "+encoding
+#                       +" as encoding, or the "
+#                       +"SI units won't display correctly\n" )
+
+# Change the default model for the Quantities.units module to 
+# the physical model of SI units
+_model     = SIModel()
+units.set_default_model( _model )
 
 ## Unit instance to model the BaseUnit Ampere.
 AMPERE   = units.BaseUnit( "A" )
@@ -139,8 +144,8 @@ VOLT        = units.AlternateUnit( "V", WATT / AMPERE )
 FARAD       = units.AlternateUnit( "F", COULOMB / VOLT )
 
 ## Unit instance to model the SI unit Ohm.
-# \note The <tt>UTF-8</tt> encoded string stands for \f$\Omega\f$.
-OHM         = units.AlternateUnit( ( u"\u03A9" ).encode( "UTF-8" ), 
+# \note The <tt>UTF-8</tt> encoded string stands for \f$\Omega\f$.  HGK: changed to Ohm
+OHM         = units.AlternateUnit( "Ohm",                         # ( u"\u03A9" ).encode( "UTF-8" ), 
                                    VOLT / AMPERE )
 
 ## Unit instance to model the SI unit Siemens.
@@ -176,9 +181,5 @@ SIVERT      = units.AlternateUnit( "Sv", JOULE/KILOGRAM )
 ## Unit instance to model the SI unit Katal.
 KATAL       = units.AlternateUnit( "kat", MOLE/SECOND )
 
-# Change the default model for the Quantities.units module to 
-# the physical model of SI units
-_model     = SIModel()
-units.set_default_model( _model )
 
 ## @}
