@@ -87,10 +87,10 @@ import operator
 import numpy
 
 # local modules
-import arithmetic
-import qexceptions
-import si
-import units
+import scuq.arithmetic as arithmetic
+import scuq.qexceptions as qexceptions
+#import scuq.si as si
+import scuq.units as units
 
 def set_strict(bValue = True):
     """! @brief       An abbreviation for Quantity.set_strict.

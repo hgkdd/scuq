@@ -23,26 +23,10 @@
 import operator
 
 # local modules
-import arithmetic
-import operators
-import qexceptions
+import scuq.arithmetic as arithmetic
+import scuq.operators as operators
+import scuq.qexceptions as qexceptions
 
-def set_default_model( physicalModel ):
-    """! @brief       Set the default physical model to use.
-      @param physicalModel The physical model to use.
-      @see PhysicalModel.
-    """
-    assert( isinstance( physicalModel, PhysicalModel ) )
-    _UNITS_MANAGER.set_model( physicalModel )
-    
-def get_default_model():
-    """! @brief       Get the physical model currently in use.
-       This function returns None, if no model is currently in use.
-       @return The physical model that is currently in use.
-       @see PhysicalModel.
-    """
-    return _UNITS_MANAGER.get_model()
-    
 class PhysicalModel:
     """! @brief       This class models the abstract interface for physical models.
      
@@ -65,6 +49,23 @@ class PhysicalModel:
                @return The corresponding physical dimension.
         """
         raise NotImplementedError
+    
+
+def set_default_model( physicalModel ):
+    """! @brief       Set the default physical model to use.
+      @param physicalModel The physical model to use.
+      @see PhysicalModel.
+    """
+    assert( isinstance( physicalModel, PhysicalModel ) )
+    _UNITS_MANAGER.set_model( physicalModel )
+    
+def get_default_model():
+    """! @brief       Get the physical model currently in use.
+       This function returns None, if no model is currently in use.
+       @return The physical model that is currently in use.
+       @see PhysicalModel.
+    """
+    return _UNITS_MANAGER.get_model()
     
     
 class Dimension:    
@@ -327,8 +328,7 @@ class Unit:
         for i in range( 0, sysUnit.get_unitCount() ):
             unit = sysUnit.get_unit( i )
             dim  = ( unit.get_dimension() ** 
-                     sysUnit.get_unitPow( i ) ).root( 
-                     sysUnit.get_unitRoot( i ) )
+                     sysUnit.get_unitPow(i)).root(sysUnit.get_unitRoot(i))
             dimension = dimension * dim
         
         return dimension
@@ -444,12 +444,12 @@ class Unit:
         assert( isinstance( other, int ) or isinstance( other, long ) )
         value = long( other )
 
-        if( other > 0L ):
-            return self.__rootInstance( self, other )
-        elif( other == 0L ):
+        if( value > 0L ):
+            return self.__rootInstance( self, value )
+        elif( value == 0L ):
             raise ArithmeticError( "The root cannot be zero." )
         else:
-            return ONE.__div__( self.root( -n ) )
+            return ONE.__div__( self.root( -value ) )
         
     def sqrt( self ):
         """! @brief Support of square root.
@@ -503,7 +503,7 @@ class Unit:
               @return A new compound unit.
               @exception TypeError If the units describe different dimensions.
         """
-        assert( isinstance( other, unit ) )
+        assert( isinstance( other, Unit ) )
         return CompoundUnit( self, other )
     
     def __str__( self ):
@@ -604,12 +604,12 @@ class Unit:
             if( self.get_unitRoot( i ) != 1 ):
                 raise qexceptions.ConversionException( unit, \
                                  " has has fractional exponent" )
-            pow = self.get_unitPow( i )
-            if( pow < 0L ):
-                pow = -pow
+            pow_ = self.get_unitPow( i )
+            if( pow_ < 0L ):
+                pow_ = -pow_
                 op  = ~op
             
-            for j in range( 0, pow ):
+            for _ in range( 0, pow ):
                 operator = operator * op
         
         return operator
@@ -793,7 +793,7 @@ class BaseUnit( Unit ):
         """
         self.__symbol__ = state
         if( not _UNITS_MANAGER.existsUnit( self ) ):
-            raise UnknownUnitException( self, " is unknown, and can"
+            raise qexceptions.UnknownUnitException( self, " is unknown, and can"
                                            +" therefore not  be unpickled" )
     
 
@@ -985,9 +985,6 @@ class CompoundUnit( DerivedUnit ):
         else:
             self.__first__ = firstUnit
             self.__next__  = nextUnit
-            
-        return None
-    
     
     def get_first( self ):
         """! @brief Get the first unit.
@@ -1266,11 +1263,11 @@ class ProductUnit( DerivedUnit ):
             if( item.get_root() != 1 ):
                 raise qexceptions.ConversionException( self, \
                     "Unit has rational exponent" )
-            pow      = item.get_pow()
-            if( pow < 0L ):
-                pow = -pow
+            pow_ = item.get_pow()
+            if( pow_ < 0L ):
+                pow_ = -pow_
                 operator = ~operator
-            for i in range( 0, pow ):
+            for _ in range( 0, pow_ ):
                 result = result * operator
                 
         return result
@@ -1689,6 +1686,6 @@ LUMINOUS_INTENSITY = Dimension( "Li" )
 ONE = ProductUnit()
 
 ## Predefined global dimension for a dimensionless quantity.
-NONE        = Dimension( ONE )
+NONE = Dimension( ONE )
 
 ## @}

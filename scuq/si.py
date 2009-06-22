@@ -30,8 +30,8 @@ import string
 import sys
 
 # local modules
-import units
-import qexceptions
+import scuq.units as units
+import scuq.qexceptions as qexceptions
 
 class SIModel( units.PhysicalModel ):
     """! @brief       The interface for a physical model for SI units.

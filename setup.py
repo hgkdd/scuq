@@ -1,5 +1,7 @@
+from ez_setup import use_setuptools
+use_setuptools()
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 import version
 
 ver=''
@@ -13,6 +15,7 @@ setup(name='scuq',
       license='All rights reserved',
       url='http://tu-dresden.de/et/tet',
       install_requires=['numpy'],
-      packages=['scuq'],
-      data_files=[('scuq', ['scuq/LICENSE'])],
+      packages=find_packages(),
+      # packages=['scuq'],
+      # data_files=[('scuq', ['scuq/LICENSE'])],
       )

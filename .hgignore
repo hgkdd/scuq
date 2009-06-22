@@ -11,7 +11,7 @@ scuq.egg-info/*
 build/*
 doc/*
 dist/*
-mpy/__version__.py
+scuq/__version__.py
 
 syntax: regexp
 .*\#.*\#$

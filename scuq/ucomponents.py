@@ -34,10 +34,10 @@ import numpy
 import operator
 
 # local modules
-import arithmetic
-import quantities
-import units
-import cucomponents
+import scuq.arithmetic as arithmetic
+import scuq.quantities as quantities
+import scuq.units as units
+import scuq.cucomponents as cucomponents
     
 def clearDuplicates( alist ):
     """! @brief       Remove identical elements from a list

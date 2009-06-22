@@ -21,11 +21,9 @@
 import numpy
 
 # local modules
-import arithmetic
-import operator
-import arithmetic
-import ucomponents as us
-import quantities as q
+import scuq.arithmetic as arithmetic
+#import scuq.ucomponents as us
+import scuq.quantities as q
 
 def complex_to_matrix(value):
     """! @brief This function transforms a complex value into a matrix.
@@ -492,7 +490,7 @@ class CUnaryOperation(CUncertainComponent):
         @param self
         @return A list containing the instances of CUncertainInput that this 
                  instance depends on."""
-        return us.clearDuplicates(self._sibling.depends_on())
+        return [ u for u in self._sibling.depends_on() if u not in locals()['_[1]'] ]  #us.clearDuplicates(self._sibling.depends_on())
 
 class CBinaryOperation(CUncertainComponent): 
     """! @brief This abstract class models a binary operation. """
@@ -523,8 +521,7 @@ class CBinaryOperation(CUncertainComponent):
         @param self
         @return A list containing the instances of CUncertainInput that this 
                 instance depends on."""
-        return us.clearDuplicates(self._left.depends_on()+
-                                  self._right.depends_on())
+        return [ u for u in self._left.depends_on()+self._right.depends_on() if u not in locals()['_[1]'] ] #us.clearDuplicates(self._left.depends_on()+self._right.depends_on())
 
 class Exp(CUnaryOperation) : 
     """! @brief @brief This class models the exponential function \f$e^x\f$.

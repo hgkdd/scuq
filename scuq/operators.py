@@ -22,8 +22,8 @@ import operator
 import pickle
 
 # local modules
-import arithmetic
-import quantities
+import scuq.arithmetic as arithmetic
+#import scuq.quantities as quantities 
 
 class UnitOperator:
     """! @brief       Basic abstract Operator to use on units.
@@ -564,7 +564,8 @@ class MultiplyOperator( UnitOperator ):
         """
         assert( operator.isNumberType( value ) )
         newval = value * self._factor
-        if isinstance(value, quantities.Quantity):
+        #if isinstance(value, quantities.Quantity):
+        if hasattr(newval, '_unit'):
             newval._unit=self.toUnit
         return newval
     
