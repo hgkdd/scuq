@@ -502,6 +502,15 @@ class Quantity:
               @return A string describing this quantity.
         """
         return str( self._value )+" "+str( self._unit )
+
+    def __repr__( self ):
+        """! @brief Get a string describing this Quantity.
+              The result will be of the form <tt>Quantity(unit, value)</tt>
+              (i.e. "Quantity(si.METER, 12.0)").
+              @param self
+              @return A string describing this quantity.
+        """
+        return "Quantity(%s, %s)"%(self._unit, self._value)
     
     def __lt__( self, other ):
         """! @brief Check, if this instance is less than the argument.
