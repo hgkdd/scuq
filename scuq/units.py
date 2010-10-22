@@ -591,7 +591,7 @@ class Unit:
         # Transformed Unit?
         if( isinstance( self, TransformedUnit ) ):
             return self.get_operator_to(self.get_system_unit())
-						
+
         # Product unit
         operator = operators.IDENTITY
         for i in range( 0, self.get_unitCount() ):
@@ -609,7 +609,7 @@ class Unit:
                 pow_ = -pow_
                 op  = ~op
             
-            for _ in range( 0, pow ):
+            for _ in range( 0, pow_ ):
                 operator = operator * op
         
         return operator
