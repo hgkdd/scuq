@@ -154,6 +154,14 @@ class Quantity:
         self._unit    = unit
         self._value   = Quantity._accuracy( value )
     
+    def reduce_to(self, unit ):
+        sdimen=self._unit.get_dimension()
+        udimen=unit.get_dimension()
+        if sdimen == udimen:
+            return Quantity(unit, self._value)
+        else:
+            return self
+    
     def get_value( self, unit ):
         """! @brief Get the absolute value of the quantity using the specified unit.
              
