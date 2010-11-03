@@ -2235,8 +2235,13 @@ class Context:
     #                  attached.
     # \return component having the context assigned.
     def value_of( self, component ):
-        assert(isinstance(component, UncertainComponent))
-        component.set_context( self )
+        #assert(isinstance(component, UncertainComponent))
+        if isinstance(component, UncertainComponent):
+            component.set_context( self )
+        elif isinstance(component, quantities.Quantity):
+            component._value.set_context( self )
         return component
+
+            
 
 ## @}
