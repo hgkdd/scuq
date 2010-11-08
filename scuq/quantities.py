@@ -1124,14 +1124,17 @@ class Quantity:
                                          +"quantities in quantities")
         else:
             raise NotImplementedError()
-            
-    def get_expectation_value( self ):
+    def get_expectation_value_as_float( self ):
         v=self._value
         try:
             v=v.get_value()
         except AttributeError:
             pass
         return v
+            
+    def get_expectation_value( self ):
+        v=self.get_expectation_value_as_float()
+        return Quantity(self._unit, v)
         
 ## @}
 
