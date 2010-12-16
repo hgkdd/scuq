@@ -1367,7 +1367,7 @@ class Sqrt( UnaryOperation ):
               @param right Right silbling of this instance.
         """
         UnaryOperation.__init__( self, right )
-        self.arithmetic_check()
+        #self.arithmetic_check()
         
     def arithmetic_check( self ):
         """! @brief Checks for undefined arguments.
