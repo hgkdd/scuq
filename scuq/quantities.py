@@ -291,6 +291,9 @@ class Quantity:
         newValue = self._value / other._value
         return Quantity( newUnit, newValue )
     
+    def __truediv__( self, other ):
+        return self.__div__(other)
+    
     def __radd__( self, other ):
         """! @brief Get the sum of this instance of Quantity and another value.
               @attention This library assumes that this is a commutative operation.
