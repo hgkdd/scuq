@@ -507,7 +507,7 @@ class UncertainComponent:
             context = self._context
         except AttributeError:
             context = Context()
-            bnc = True
+            bnc = len(self.depends_on()) > 1
 
         assert(isinstance(context, Context))
             
@@ -1209,7 +1209,7 @@ class Pow( BinaryOperation ):
               the resulting uncertainty is @f$ u(y) = x_2 \times x_1^{x_2-1} 
               \times u(x_1) + x_1^{x_2} \times ln(x_1) \times u(x_2) @f$.
               @attention The uncertainty is only defined, if @f$x_1>0@f$ and
-                         @f$x_1>0@f$.
+                         @f$x_2>0@f$.
               @param self
               @param component Another instance of uncertainty.
               @return A numeric value, representing the standard uncertainty.
@@ -1219,13 +1219,19 @@ class Pow( BinaryOperation ):
         u_x_2 = self.get_right().get_uncertainty( component )
         x_1   = self.get_left().get_value()
         x_2   = self.get_right().get_value()
-        if( x_1 <= 0.0 or x_2 <= 0.0 ):
-            raise ArithmeticError( "Illegal range exception:"+
-                                  " The uncertainty is not"+
-                                  "defined for the arguments" )
-        
-        return x_2 * x_1 ** ( x_2 - 1.0 ) * u_x_1 + \
-                numpy.power( x_1, x_2 ) * numpy.log( x_1 ) * u_x_2
+        #if( x_1 <= 0.0 or x_2 <= 0.0 ):
+        #    import sys
+        #    print >> sys.stderr, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        #    print >> sys.stderr, type(x_1), x_1, type(x_2), x_2
+        #    raise ArithmeticError( "Illegal range exception:"+
+        #                          " The uncertainty is not"+
+        #                          "defined for the arguments" )
+        try:
+            return x_2 * x_1 ** ( x_2 - 1.0 ) * u_x_1 + \
+                    numpy.power( x_1, x_2 ) * numpy.log( x_1 ) * u_x_2
+        except:
+            print >> sys.stderr, type(x_1), x_1, type(x_2), x_2
+            return 0.0
     
     def equal_debug( self, other ):
         """! @brief A method that is only used for serialization checking.

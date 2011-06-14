@@ -246,6 +246,9 @@ class UnitsManager:
         assert( ( isinstance( unit, BaseUnit ) 
                 or isinstance( unit, AlternateUnit ) ) \
                 or isinstance( unit, Dimension ) )
+        #print unit.get_symbol(), repr(unit.get_symbol())
+        #print self._unitsDictionary
+        #print self._unitsDictionary.has_key( unit.get_symbol() )
         return self._unitsDictionary.has_key( unit.get_symbol() )
     
     def set_model( self, physicalModel ):
@@ -792,6 +795,7 @@ class BaseUnit( Unit ):
               @see _UNITS_MANAGER
         """
         self.__symbol__ = state
+        #print state
         if( not _UNITS_MANAGER.existsUnit( self ) ):
             raise qexceptions.UnknownUnitException( self, " is unknown, and can"
                                            +" therefore not  be unpickled" )
