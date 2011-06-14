@@ -116,6 +116,7 @@ class UncertainComponent:
         """
         raise NotImplementedError
     
+    
     def __getstate__( self ):
         """! @brief Serialization using pickle.
               @param self
@@ -474,6 +475,24 @@ class UncertainComponent:
               @see Context
         """
         self._context = context
+
+    def eval (self):
+        """! @brief Factory method to get get an object with evaluated uncertainties.
+              @param self
+              @return object with <value> and <uncertainty>
+              @see set_context
+        """
+        context = None
+        try:
+            context = self._context
+        except AttributeError:
+            context = Context()
+
+        assert(isinstance(context, Context))
+            
+        uncert = context.uncertainty(self)
+        value  = self.get_value()
+        return UncertainInput (value, uncert)
     
     def __str__( self ):
         """! @brief This method returs the absolute value of this instance.
@@ -2168,11 +2187,21 @@ class Context:
               @return (value, The standard uncertainty,unit).
         """
         #if( isinstance( component, quantities.Quantity ) ):
-        unit  = component.get_default_unit()
-        ucomp = component.get_value( unit )
+        try:
+            unit  = component.get_default_unit()
+        except AttributeError:
+            # does not have unit
+            unit = None
+        if unit:
+            ucomp = component.get_value( unit )
+        else:
+            ucomp = component.get_value()
         try:
             value = ucomp.get_value()
-            uncertainty=self.uncertainty(component).get_value(unit)
+            if unit:
+                uncertainty=self.uncertainty(component).get_value(unit)
+            else:
+                uncertainty=self.uncertainty(component).get_value()
         except AttributeError:
             value = ucomp
             uncertainty=0.0

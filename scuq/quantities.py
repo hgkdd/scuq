@@ -116,6 +116,15 @@ class Quantity:
     
     _STRICT = True
     
+    def eval(self):
+        u=self._unit
+        v=self._value
+        try:
+            v=v.eval()
+        except AttributeError:
+            pass
+        return Quantity(u,v)
+    
     def _unitComparsion( unit1, unit2 ):
         """! @brief Helper method. 
               @param unit1 A unit.
