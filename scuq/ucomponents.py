@@ -1227,9 +1227,15 @@ class Pow( BinaryOperation ):
         #                          " The uncertainty is not"+
         #                          "defined for the arguments" )
         try:
-            return x_2 * x_1 ** ( x_2 - 1.0 ) * u_x_1 + \
-                    numpy.power( x_1, x_2 ) * numpy.log( x_1 ) * u_x_2
+            #print repr(u_x_2)
+            if abs(u_x_2)<=1e-12:
+                u = x_2 * numpy.power(x_1,( x_2 - 1.0 )) * u_x_1
+            else:
+                u = x_2 * numpy.power(x_1,( x_2 - 1.0 )) * u_x_1 + \
+                    numpy.power( x_1, x_2 ) * u_x_2 * numpy.log( x_1 )
+            return u
         except:
+            import sys
             print >> sys.stderr, type(x_1), x_1, type(x_2), x_2
             return 0.0
     
