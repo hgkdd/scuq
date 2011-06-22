@@ -310,6 +310,28 @@ class UncertainComponent:
         """
         return not ( self is other )
     
+    def __cmp__( self, other ):
+        sval  = self.get_value()
+        oval  = other.get_value()
+        return cmp(sval, oval)
+
+    def __lt__( self, other ):
+        sval  = self.get_value()
+        oval  = other.get_value()
+        return sval < oval
+    def __le__( self, other ):
+        sval  = self.get_value()
+        oval  = other.get_value()
+        return sval <= oval
+    def __gt__( self, other ):
+        sval  = self.get_value()
+        oval  = other.get_value()
+        return sval > oval
+    def __ge__( self, other ):
+        sval  = self.get_value()
+        oval  = other.get_value()
+        return sval >= oval
+        
     def __add__( self, other ):
         """! @brief This method adds the argument to this instance.
               @note If the argument is not an instance of UncertainComponent
