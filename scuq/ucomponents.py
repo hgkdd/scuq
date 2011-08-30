@@ -312,24 +312,39 @@ class UncertainComponent:
     
     def __cmp__( self, other ):
         sval  = self.get_value()
-        oval  = other.get_value()
+        try:
+            oval  = other.get_value()
+        except AttributeError:
+            oval=other
         return cmp(sval, oval)
 
     def __lt__( self, other ):
         sval  = self.get_value()
-        oval  = other.get_value()
+        try:
+            oval  = other.get_value()
+        except AttributeError:
+            oval=other
         return sval < oval
     def __le__( self, other ):
         sval  = self.get_value()
-        oval  = other.get_value()
+        try:
+            oval  = other.get_value()
+        except AttributeError:
+            oval=other
         return sval <= oval
     def __gt__( self, other ):
         sval  = self.get_value()
-        oval  = other.get_value()
+        try:
+            oval  = other.get_value()
+        except AttributeError:
+            oval=other
         return sval > oval
     def __ge__( self, other ):
         sval  = self.get_value()
-        oval  = other.get_value()
+        try:
+            oval  = other.get_value()
+        except AttributeError:
+            oval=other
         return sval >= oval
         
     def __add__( self, other ):
