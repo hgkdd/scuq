@@ -1,0 +1,12 @@
+To install scuq run the command
+
+python setup.py install
+
+from the main directory of scuq. The setuptools module of Python has to be installed (http://pypi.python.org/pypi/setuptools).
+
+
+Um scuq zu installieren führen Sie den Befehl
+
+python setup.py install
+
+im Hauptverzeichnis von scuq aus. Das setuptools-Modul von Python muss installiert sein (http://pypi.python.org/pypi/setuptools).
