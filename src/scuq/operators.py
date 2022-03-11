@@ -533,7 +533,7 @@ class MultiplyOperator( UnitOperator ):
               @return The inverse Operation of the current Operation.
         """
         # Optimize for integer accuracy
-        if( isinstance( self._factor, long ) or 
+        if( isinstance( self._factor, int ) or 
             isinstance( self._factor, int ) ):
             return MultiplyOperator( arithmetic.RationalNumber( 1, 
                                     self._factor ) )

@@ -487,7 +487,7 @@ class Quantity:
         if(Quantity.is_strict() and self.get_default_unit() != units.ONE):
             raise qexceptions.ConversionException(
                 "Only dimensionless quantities can be converted to long")
-        return long( self._value )
+        return int( self._value )
     
     def __float__( self ):
         """! @brief Cast this instance to the numeric type float.
@@ -713,7 +713,7 @@ class Quantity:
               rational number.
               @param value The value to be converted.
         """
-        if( isinstance( value, int ) or isinstance( value, long ) ):
+        if( isinstance( value, int ) or isinstance( value, int ) ):
             return arithmetic.RationalNumber( value, 1 )
         else:
             return value
@@ -730,9 +730,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.arccos( self._value )
 
@@ -747,9 +745,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.arccosh( self._value )
 
@@ -764,9 +760,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.arcsin( self._value )
 
@@ -781,9 +775,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.arcsinh( self._value )
 
@@ -798,9 +790,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.arctan( self._value )
 
@@ -815,9 +805,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.arctanh( self._value )
 
@@ -832,9 +820,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.cos( self._value )
 
@@ -849,9 +835,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.cosh( self._value )
 
@@ -866,9 +850,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.tan( self._value )
 
@@ -883,9 +865,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.tanh( self._value )
 
@@ -900,9 +880,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.log10( self._value )
 
@@ -917,9 +895,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.log2( self._value )
 
@@ -934,9 +910,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.sin( self._value )
 
@@ -951,9 +925,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.sinh( self._value )
 
@@ -1028,9 +1000,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
 
         value = numpy.exp( self._value )
 
@@ -1045,9 +1015,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Unit is not dimensionless " ) )
+            raise qexceptions
                     
         value = numpy.log( self._value )
 
@@ -1067,9 +1035,7 @@ class Quantity:
             return numpy.arctan2(tmp, other)
         assert(isinstance(other, Quantity))
         if( not (self.is_dimensionless() or other.is_dimensionless())):
-            raise( qexceptions.NotDimensionlessException( 
-                    self.get_default_unit(), 
-                    "Units are not dimensionless " ) )
+            raise qexceptions
         
         other_val = other.get_value(other.get_default_unit())
         value = numpy.arctan2( self._value, other_val )
@@ -1125,7 +1091,7 @@ class Quantity:
         if(isinstance(other, Quantity)):
             return (self, other)
         elif(isinstance(other, int) or
-             isinstance(other, long) or
+             isinstance(other, int) or
              isinstance(other, float) or
              isinstance(other, complex) or
              isinstance(other, arithmetic.RationalNumber)):

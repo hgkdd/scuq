@@ -733,7 +733,7 @@ class UncertainComponent:
                                      +" complex-valued uncertain values")
         elif(isinstance(other, arithmetic.RationalNumber) 
               or isinstance(other, int)
-              or isinstance(other, long)
+              or isinstance(other, int)
               or isinstance(other, float)):
             other = UncertainComponent.value_of(other)
             return (self,other)
@@ -1275,7 +1275,7 @@ class Pow( BinaryOperation ):
             return u
         except:
             import sys
-            print >> sys.stderr, type(x_1), x_1, type(x_2), x_2
+            print(type(x_1), x_1, type(x_2), x_2, file=sys.stderr)
             return 0.0
     
     def equal_debug( self, other ):

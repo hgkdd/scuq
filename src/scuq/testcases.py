@@ -25,14 +25,14 @@ import unittest
 import sys
 
 # local modules
-import arithmetic
-import operators
-import qexceptions
-import si
-import ucomponents
-import cucomponents
-import quantities
-import units
+from . import arithmetic
+from . import operators
+from . import qexceptions
+from . import si
+from . import ucomponents
+from . import cucomponents
+from . import quantities
+from . import units
 
 def test_serialization( instance, copy, sanityInstance, type, bCopy=True ):
     """! @brief       A general test for serialization of instances.
@@ -209,7 +209,7 @@ class TestSIUnits( unittest.TestCase ):
                                    si.AMPERE, "V" )
         TestSIUnits.ALTERNATE_TEST( si.FARAD, si.COULOMB / si.VOLT, 
                                    si.AMPERE, "F" )
-        _omega = u"\u03A9"
+        _omega = "\u03A9"
         _encoded = _omega.encode( "UTF-8" )
         TestSIUnits.ALTERNATE_TEST( si.OHM, si.VOLT / si.AMPERE, 
                                    si.AMPERE, _encoded )
@@ -266,9 +266,9 @@ class TestArithmetic( unittest.TestCase ):
         # creation using one argument + conversion to long
         number = arithmetic.RationalNumber( 2 )
         assert( number.get_dividend() == 2 and 
-                isinstance( number.get_dividend(), long ) )
+                isinstance( number.get_dividend(), int ) )
         assert( number.get_divisor() == 1 and 
-                isinstance( number.get_dividend(), long ) )
+                isinstance( number.get_dividend(), int ) )
         # creation using two arguments + test normalization
         number = arithmetic.RationalNumber( 2, -4 )
         assert( number.get_dividend() == -1 )
@@ -297,8 +297,8 @@ class TestArithmetic( unittest.TestCase ):
         number = arithmetic.RationalNumber( 4, 3 )
         intval = int( number )
         assert( intval == 1 and isinstance( intval, int ) )
-        longval = long( number )
-        assert( longval == 1 and isinstance( longval, long ) )
+        longval = int( number )
+        assert( longval == 1 and isinstance( longval, int ) )
         floatval = float( number )
         assert( floatval == 4.0 / 3.0 )
         complexval = complex( number )
@@ -1082,7 +1082,7 @@ class TestOperators( unittest.TestCase ):
         id = operators.IDENTITY
         # test conversion
         TestOperators.TEST_CONV( id, 1, 1, int )
-        TestOperators.TEST_CONV( id, 1, 1, long )
+        TestOperators.TEST_CONV( id, 1, 1, int )
         TestOperators.TEST_CONV( id, arithmetic.RationalNumber( 1, 2 ), 
                                 arithmetic.RationalNumber( 1, 2 ), 
                                 arithmetic.RationalNumber )
@@ -1638,7 +1638,7 @@ class TestQuantity( unittest.TestCase ):
               @param self
         """
         result = numpy.arctan2(self.dimensionless, 10.0)
-        print result
+        print(result)
         
     def test_hypot( self ):
         """! @brief Test the operator numpy.hypot on quantities.
@@ -2981,16 +2981,16 @@ class TestQuantity( unittest.TestCase ):
             error = 1
         assert( error )
         
-        value = long( q1 )
+        value = int( q1 )
         assert( value == 10 )
-        value = long( q2 )
+        value = int( q2 )
         assert( value == 1 )
-        value = long( q3 )
+        value = int( q3 )
         assert( value == 0 )
         
         error = 0
         try:
-            long( q4 )
+            int( q4 )
         except TypeError:
             error = 1
         assert( error )

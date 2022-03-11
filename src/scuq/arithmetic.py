@@ -29,12 +29,12 @@ def gcd( m, n ):
       @param m Second value (greater or equal to zero).
       @return The greatest common divisor of the inputs.
     """
-    assert( isinstance( m, int ) or isinstance( m, long ) )
-    assert( isinstance( n, int ) or isinstance( n, long ) )
+    assert( isinstance( m, int ) or isinstance( m, int ) )
+    assert( isinstance( n, int ) or isinstance( n, int ) )
     assert( n >= 0 and m >= 0 )
     
-    m = long( m )
-    n = long( n )
+    m = int( m )
+    n = int( n )
     
     if( n == 0 ):
         return m
@@ -82,15 +82,15 @@ class RationalNumber:
                      rational number. If this parameter is obmitted it is 
                      initialized to 1.
         """
-        assert( isinstance( dividend, int ) or isinstance( dividend, long ) )
-        assert( isinstance( divisor, int ) or isinstance( divisor, long ) 
+        assert( isinstance( dividend, int ) or isinstance( dividend, int ) )
+        assert( isinstance( divisor, int ) or isinstance( divisor, int ) 
                 or divisor == None )
         
         if( divisor == 0 ):
             raise ArithmeticError( "Divide by zero" )
         
-        self._divisor = long( divisor )    
-        self._dividend = long( dividend )
+        self._divisor = int( divisor )    
+        self._dividend = int( dividend )
         self.normalize()
         
     def __str__( self ):
@@ -204,7 +204,7 @@ class RationalNumber:
             if( value < 0 ):
                 return pow( ~self, -value )
             else:
-                value = long(value)
+                value = int(value)
                 return RationalNumber( self._dividend**value, self._divisor
                                        **value )
                 
@@ -220,7 +220,7 @@ class RationalNumber:
         """
         assert(isinstance(value, RationalNumber))
         if( self.is_integer() ):
-            return value ** long( self )
+            return value ** int( self )
         else:
             return value ** float( self )
     
@@ -308,8 +308,8 @@ class RationalNumber:
         """
         assert( isinstance(value, numbers.Number) )
         
-        if( isinstance( value, long ) or isinstance( value, int ) ):
-            return self._dividend < self._divisor * long( value )
+        if( isinstance( value, int ) or isinstance( value, int ) ):
+            return self._dividend < self._divisor * int( value )
         if( isinstance( value, RationalNumber ) ):
             return self._dividend * value._divisor < \
                    value._dividend * self._divisor
@@ -323,7 +323,7 @@ class RationalNumber:
               @return True, if this rational number unequal to the argument.
         """
         assert( isinstance(value, numbers.Number) )
-        if( isinstance( value, long ) or isinstance( value, int ) ):
+        if( isinstance( value, int ) or isinstance( value, int ) ):
            return self._divisor != 1 or self._dividend != value
         if( isinstance( value, RationalNumber ) ):
            return self._divisor != value._divisor or \
@@ -339,8 +339,8 @@ class RationalNumber:
         """
         assert( isinstance(value, numbers.Number) )
         
-        if( isinstance( value, long ) or isinstance( value, int ) ):
-            return self._dividend > self._divisor * long( value )
+        if( isinstance( value, int ) or isinstance( value, int ) ):
+            return self._dividend > self._divisor * int( value )
         if( isinstance( value, RationalNumber ) ):
             return self._dividend * value._divisor > \
                    value._dividend * self._divisor
@@ -380,7 +380,7 @@ class RationalNumber:
             return +1
         return 0
     
-    def __nonzero__( self ):
+    def __bool__( self ):
         """! @brief Check if this instance is nonzero.
               @param self
               @return True, if the dividend is nonzero.
@@ -446,7 +446,7 @@ class RationalNumber:
             return number
         if( isinstance( number, int ) ):
             return RationalNumber( number )
-        if( isinstance( number, long ) ):
+        if( isinstance( number, int ) ):
             return RationalNumber( number )
         raise TypeError( "Illegal Argument" )
     value_of = staticmethod( value_of )
@@ -719,7 +719,7 @@ class RationalNumber:
         elif(isinstance(other, int)):
             return (self,RationalNumber.value_of(other))
         # A x long -> A x A
-        elif(isinstance(other, long)):
+        elif(isinstance(other, int)):
             return (self, RationalNumber.value_of(other))
         # fall back to float
         else:

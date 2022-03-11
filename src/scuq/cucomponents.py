@@ -379,7 +379,7 @@ class CUncertainComponent :
                                      +" complex-valued uncertain values")
         elif(isinstance(other, arithmetic.RationalNumber) 
               or isinstance(other, int)
-              or isinstance(other, long)
+              or isinstance(other, int)
               or isinstance(other, float)
               or isinstance(other, complex)):
             other = CUncertainComponent.value_of(other)

@@ -144,8 +144,8 @@ class Dimension(object):
               @param value An integer to be used as power.
               @return A new dimension representing the power.
         """
-        assert( isinstance( value, int ) or isinstance( value, long ) )
-        value = long( value )
+        assert( isinstance( value, int ) or isinstance( value, int ) )
+        value = int( value )
         
         return Dimension( self._pseudoUnit ** value )
     
@@ -156,8 +156,8 @@ class Dimension(object):
               @param value An integer to be used as root.
               @return A new dimension representing the root.
         """
-        assert( isinstance( value, int ) or isinstance( value, long ) )
-        value = long( value )
+        assert( isinstance( value, int ) or isinstance( value, int ) )
+        value = int( value )
         
         return Dimension( self._pseudoUnit.root( value ) )
 
@@ -414,7 +414,7 @@ class Unit(object):
         if( self == ONE or other == ONE ):
             return self
         
-        if( isinstance( other, int ) or isinstance( other, long )):
+        if( isinstance( other, int ) or isinstance( other, int )):
             if( other == 1 ):
                 return self
             if( other > 0 ):
@@ -445,8 +445,8 @@ class Unit(object):
               @return A new unit representing the operation.
               @see ProductUnit
         """
-        assert( isinstance( other, int ) or isinstance( other, long ) )
-        value = long( other )
+        assert( isinstance( other, int ) or isinstance( other, int ) )
+        value = int( other )
 
         if( value > 0 ):
             return self.__rootInstance( self, value )
@@ -689,7 +689,7 @@ class Unit(object):
         if(isinstance(other, Unit)):
             return (self, other)
         elif(isinstance(other, int) or
-             isinstance(other, long) or
+             isinstance(other, int) or
              isinstance(other, float) or
              isinstance(other, complex) or
              isinstance(other, arithmetic.RationalNumber)):
@@ -1083,12 +1083,12 @@ class __ProductElement__(object):
               @param root The root assigned to this factor.
         """
         assert( isinstance( unit, Unit ) )
-        assert( isinstance( pow, int ) or isinstance( pow, long ) )
-        assert( isinstance( root, int ) or isinstance( root, long ) )
+        assert( isinstance( pow, int ) or isinstance( pow, int ) )
+        assert( isinstance( root, int ) or isinstance( root, int ) )
         
         self.__unit__ = unit
-        self.__pow__  = long( pow )
-        self.__root__ = long( root )
+        self.__pow__  = int( pow )
+        self.__root__ = int( root )
     
     def get_unit( self ):
         """! @brief Get the unit of this factor.
@@ -1130,18 +1130,18 @@ class __ProductElement__(object):
               @param self
               @param value An interget to be used as new power.
         """
-        assert( isinstance( value, int ) or isinstance( value, long ) )
+        assert( isinstance( value, int ) or isinstance( value, int ) )
         
-        self.__pow__ = long( value )
+        self.__pow__ = int( value )
 
     def set_root( self, value ):
         """! @brief This method changes the root.
               @param self
               @param value An interger to be used as new root.        
         """
-        assert( isinstance( value, int ) or isinstance( value, long ) )
+        assert( isinstance( value, int ) or isinstance( value, int ) )
 
-        self.__root__ = long( value )
+        self.__root__ = int( value )
         
     def normalize( self ):
         """! @brief Transform the current factor into its canonical form.
@@ -1283,7 +1283,7 @@ class ProductUnit( DerivedUnit ):
               @param index Index of the desired unit.
               @return The unit at index.
         """
-        assert( isinstance( index, int ) or isinstance( index, long ) )
+        assert( isinstance( index, int ) or isinstance( index, int ) )
         assert( index >= 0 )
         assert( index < len( self.__elements__ ) )
         return self.__elements__[index].get_unit()
@@ -1308,7 +1308,7 @@ class ProductUnit( DerivedUnit ):
               @param index Index of the desired unit.
               @return The (integer) power of the current unit
         """
-        assert( isinstance( index, int ) or isinstance( index, long ) )
+        assert( isinstance( index, int ) or isinstance( index, int ) )
         assert( index >= 0 )
         assert( index < len( self.__elements__ ) )
         return self.__elements__[index].get_pow()
@@ -1327,7 +1327,7 @@ class ProductUnit( DerivedUnit ):
               @param index Index of the desired unit.
               @return The (integer) root of the current unit
         """
-        assert( isinstance( index, int ) or isinstance( index, long ) )
+        assert( isinstance( index, int ) or isinstance( index, int ) )
         assert( index >= 0 )
         assert( index < len( self.__elements__ ) )
         return self.__elements__[index].get_root()
