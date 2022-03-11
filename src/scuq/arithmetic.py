@@ -20,6 +20,7 @@
 
 # standard module
 import operator
+import numbers
 import numpy
 
 def gcd( m, n ):
@@ -30,12 +31,12 @@ def gcd( m, n ):
     """
     assert( isinstance( m, int ) or isinstance( m, long ) )
     assert( isinstance( n, int ) or isinstance( n, long ) )
-    assert( n >= 0L and m >= 0L )
+    assert( n >= 0 and m >= 0 )
     
     m = long( m )
     n = long( n )
     
-    if( n == 0L ):
+    if( n == 0 ):
         return m
     else:
         return gcd( n, m % n )
@@ -70,7 +71,7 @@ class RationalNumber:
       @see RationalNumber.__float__
     """
     
-    def __init__( self, dividend, divisor=1L ):
+    def __init__( self, dividend, divisor=1 ):
         """! @brief Default constructor.
         
               This initializes the rational number.
@@ -85,7 +86,7 @@ class RationalNumber:
         assert( isinstance( divisor, int ) or isinstance( divisor, long ) 
                 or divisor == None )
         
-        if( divisor == 0L ):
+        if( divisor == 0 ):
             raise ArithmeticError( "Divide by zero" )
         
         self._divisor = long( divisor )    
@@ -97,7 +98,7 @@ class RationalNumber:
               @param self
               @return A string representing this rational number.
         """
-        if( self._divisor == 1L ):
+        if( self._divisor == 1 ):
             return str( self._dividend )
         else:
             return "("+str( self._dividend )+"/"+str( self._divisor )+")"
@@ -200,7 +201,7 @@ class RationalNumber:
         """
         assert( isinstance( value, RationalNumber ) )
         if( value.is_integer() ):
-            if( value < 0L ):
+            if( value < 0 ):
                 return pow( ~self, -value )
             else:
                 value = long(value)
@@ -231,7 +232,7 @@ class RationalNumber:
         """
         assert( isinstance( value, RationalNumber ) )
 
-        if( value._dividend == 0L ):
+        if( value._dividend == 0 ):
             raise ArithmeticError( "Divide by zero" )
 
         newDividend   = self._dividend * value._divisor
@@ -305,7 +306,7 @@ class RationalNumber:
               @param value The value to compare to.
               @return True, if this rational number is less than the argument.
         """
-        assert( operator.isNumberType( value ) )
+        assert( isinstance(value, numbers.Number) )
         
         if( isinstance( value, long ) or isinstance( value, int ) ):
             return self._dividend < self._divisor * long( value )
@@ -321,10 +322,9 @@ class RationalNumber:
               @param value The value to compare to.
               @return True, if this rational number unequal to the argument.
         """
-        assert( operator.isNumberType( value ) )
-        
+        assert( isinstance(value, numbers.Number) )
         if( isinstance( value, long ) or isinstance( value, int ) ):
-           return self._divisor != 1L or self._dividend != value
+           return self._divisor != 1 or self._dividend != value
         if( isinstance( value, RationalNumber ) ):
            return self._divisor != value._divisor or \
                   self._dividend != value._dividend
@@ -337,7 +337,7 @@ class RationalNumber:
               @param value The value to compare to.
               @return True, if this rational number is greater than the argument.
         """
-        assert( operator.isNumberType( value ) )
+        assert( isinstance(value, numbers.Number) )
         
         if( isinstance( value, long ) or isinstance( value, int ) ):
             return self._dividend > self._divisor * long( value )
@@ -372,7 +372,7 @@ class RationalNumber:
               @return -1: if this instance is less...; +1: if this is greater 
                       than the argument; 0 otherwise
         """
-        assert( operator.isNumberType( value ) )
+        assert( isinstance(value, numbers.Number) )
         
         if( self.__lt__( value ) ):
             return -1
@@ -385,7 +385,7 @@ class RationalNumber:
               @param self
               @return True, if the dividend is nonzero.
         """
-        return self._dividend != 0L
+        return self._dividend != 0
     
     ### The same arithmetic Operations again, now for
     ### left arguments.
@@ -456,7 +456,7 @@ class RationalNumber:
               be casted to long accurately.
               @return True, if the divisor is equal to one.
         """
-        return self._divisor == 1L
+        return self._divisor == 1
     
     ### The definition of numpy ufuncts
     ### All of these methods cast the rational numbers

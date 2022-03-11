@@ -18,6 +18,7 @@
 # standard modules
 import numpy
 import operator
+import numbers
 import pickle
 import types
 import unittest
@@ -264,19 +265,19 @@ class TestArithmetic( unittest.TestCase ):
         """
         # creation using one argument + conversion to long
         number = arithmetic.RationalNumber( 2 )
-        assert( number.get_dividend() == 2L and 
+        assert( number.get_dividend() == 2 and 
                 isinstance( number.get_dividend(), long ) )
-        assert( number.get_divisor() == 1L and 
+        assert( number.get_divisor() == 1 and 
                 isinstance( number.get_dividend(), long ) )
         # creation using two arguments + test normalization
         number = arithmetic.RationalNumber( 2, -4 )
-        assert( number.get_dividend() == -1L )
-        assert( number.get_divisor() == 2L )
+        assert( number.get_dividend() == -1 )
+        assert( number.get_divisor() == 2 )
         
         # Test for divide by zero
         error = False
         try:
-            number = arithmetic.RationalNumber( 2, 0L )
+            number = arithmetic.RationalNumber( 2, 0 )
         except ArithmeticError:
             error = True
         assert( error )
@@ -315,43 +316,43 @@ class TestArithmetic( unittest.TestCase ):
         # addition of RationalNumbers
         result = firstVal + secondVal
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == 11L )
-        assert( result.get_divisor()  == 6L )
+        assert( result.get_dividend() == 11 )
+        assert( result.get_divisor()  == 6 )
         # assert that arguments still untouched
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
-        assert( secondVal.get_dividend() == 1L )
-        assert( secondVal.get_divisor() == 2L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
+        assert( secondVal.get_dividend() == 1 )
+        assert( secondVal.get_divisor() == 2 )
         
         # addition of integer
         result = firstVal + 1
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == 7L )
-        assert( result.get_divisor()  == 3L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_dividend() == 7 )
+        assert( result.get_divisor()  == 3 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # addition of long
-        result = firstVal + 1L
+        result = firstVal + 1
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == 7L )
-        assert( result.get_divisor()  == 3L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_dividend() == 7 )
+        assert( result.get_divisor()  == 3 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # addition of float
         result = firstVal + 1.0
         assert( isinstance( result, float ) )
         assert( abs( result - 7.0 / 3.0 ) < 1e-5 )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # addition of complex
         result = firstVal + complex( 1.0, 2.0 )
         assert( isinstance( result, complex ) )
         assert( abs( result.real - 7.0 / 3.0 ) < 1e-5 and result.imag == 2.0 )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
     def test_sub( self ):
         """! @brief Test substracting instances of the Type arithmetic.RationalNumber.
@@ -363,43 +364,43 @@ class TestArithmetic( unittest.TestCase ):
         # substraction of RationalNumbers
         result = firstVal - secondVal
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == 5L )
-        assert( result.get_divisor()  == 6L )
+        assert( result.get_dividend() == 5 )
+        assert( result.get_divisor()  == 6 )
         # assert that arguments still untouched
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
-        assert( secondVal.get_dividend() == 1L )
-        assert( secondVal.get_divisor() == 2L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
+        assert( secondVal.get_dividend() == 1 )
+        assert( secondVal.get_divisor() == 2 )
         
         # substraction of integer
         result = firstVal - 1
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == 1L )
-        assert( result.get_divisor()  == 3L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_dividend() == 1 )
+        assert( result.get_divisor()  == 3 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # substraction of long
-        result = firstVal - 1L
+        result = firstVal - 1
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == 1L )
-        assert( result.get_divisor()  == 3L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_dividend() == 1 )
+        assert( result.get_divisor()  == 3 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # substraction of float
         result = firstVal - 1.0
         assert( isinstance( result, float ) )
         assert( abs( result - 1.0 / 3.0 ) < 1e-5 )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # substraction of complex
         result = firstVal - complex( 1.0, 2.0 )
         assert( isinstance( result, complex ) )
         assert( abs( result.real - 1.0 / 3.0 ) < 1e-5 and result.imag == -2.0 )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
     def test_mul( self ):
         """! @brief Test multiplying instances of the Type arithmetic.RationalNumber.
@@ -411,44 +412,44 @@ class TestArithmetic( unittest.TestCase ):
         # multiplication of RationalNumbers
         result = firstVal * secondVal
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == 2L )
-        assert( result.get_divisor()  == 3L )
+        assert( result.get_dividend() == 2 )
+        assert( result.get_divisor()  == 3 )
         # assert that arguments still untouched
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
-        assert( secondVal.get_dividend() == 1L )
-        assert( secondVal.get_divisor() == 2L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
+        assert( secondVal.get_dividend() == 1 )
+        assert( secondVal.get_divisor() == 2 )
         
         # multiplication of integer
         result = firstVal * 3
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == 4L )
-        assert( result.get_divisor()  == 1L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_dividend() == 4 )
+        assert( result.get_divisor()  == 1 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # multiplication of long
-        result = firstVal * 3L
+        result = firstVal * 3
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == 4L )
-        assert( result.get_divisor()  == 1L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_dividend() == 4 )
+        assert( result.get_divisor()  == 1 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # multiplication of float
         result = firstVal * 3.0
         assert( isinstance( result, float ) )
         assert( abs( result - 4.0 ) < 1e-5 )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # multiplication of complex
         result = firstVal * complex( 3.0, 2.0 )
         assert( isinstance( result, complex ) )
         assert( abs( result.real - 4.0 ) < 1e-5 and 
                 abs( result.imag - 8.0/3.0 ) < 1e-5 )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
     
     def test_pow( self ):
         """! @brief Test powers of  instances of the Type arithmetic.RationalNumber.
@@ -456,32 +457,32 @@ class TestArithmetic( unittest.TestCase ):
         """
         number = arithmetic.RationalNumber( 1, 2 )
         result = number ** 2
-        assert( result.get_dividend() == 1L )
-        assert( result.get_divisor() == 4L )
-        assert( number.get_dividend() == 1L )
-        assert( number.get_divisor() == 2L )
+        assert( result.get_dividend() == 1 )
+        assert( result.get_divisor() == 4 )
+        assert( number.get_dividend() == 1 )
+        assert( number.get_divisor() == 2 )
         
         number2 = arithmetic.RationalNumber( 0, 10 )
-        assert( number2.get_dividend() == 0L )
-        assert( number2.get_divisor() == 1L )
+        assert( number2.get_dividend() == 0 )
+        assert( number2.get_divisor() == 1 )
         
         result = number2 ** 3
-        assert( result.get_dividend() == 0L )
-        assert( result.get_divisor() == 1L )
+        assert( result.get_dividend() == 0 )
+        assert( result.get_divisor() == 1 )
         
         result = number ** 0
-        assert( result.get_dividend() == 1L )
-        assert( result.get_divisor() == 1L )
+        assert( result.get_dividend() == 1 )
+        assert( result.get_divisor() == 1 )
         
         # test negative power
         result = number ** ( -2 )
-        assert( result.get_dividend() == 4L )
-        assert( result.get_divisor() == 1L )
+        assert( result.get_dividend() == 4 )
+        assert( result.get_divisor() == 1 )
         
         # test rational integer powers
         result = number ** arithmetic.RationalNumber( 2, 1 )
-        assert( result.get_dividend() == 1L )
-        assert( result.get_divisor() == 4L )
+        assert( result.get_dividend() == 1 )
+        assert( result.get_divisor() == 4 )
         
         # test for floating point powers
         result = number ** 2.0
@@ -508,88 +509,88 @@ class TestArithmetic( unittest.TestCase ):
         # division of RationalNumbers
         result = firstVal / secondVal
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == 8L )
-        assert( result.get_divisor()  == 3L )
+        assert( result.get_dividend() == 8 )
+        assert( result.get_divisor()  == 3 )
         # assert that arguments still untouched
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
-        assert( secondVal.get_dividend() == 1L )
-        assert( secondVal.get_divisor() == 2L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
+        assert( secondVal.get_dividend() == 1 )
+        assert( secondVal.get_divisor() == 2 )
         
         # division of integer
         result = firstVal / 3
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == 4L )
-        assert( result.get_divisor()  == 9L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_dividend() == 4 )
+        assert( result.get_divisor()  == 9 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # division of long
-        result = firstVal / 3L
+        result = firstVal / 3
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == 4L )
-        assert( result.get_divisor()  == 9L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_dividend() == 4 )
+        assert( result.get_divisor()  == 9 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # division of float
         result = firstVal / 3.0
         assert( isinstance( result, float ) )
         assert( abs( result - 4.0/9.0 ) < 1e-5 )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )        
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )        
         
         # division of complex
         result = firstVal / complex( 3.0, 2.0 )
         assert( isinstance( result, complex ) )
         assert( ( abs( result.real - 4.0/13.0 ) < 1e-5 ) and 
                 ( abs( result.imag + 8.0/39.0 ) < 1e-5 ) )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
 
         #divide by negative numbers
         # division of RationalNumbers
         secondVal = arithmetic.RationalNumber( -5, 10 ) # 1/2
         result = firstVal / secondVal
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == -8L )
-        assert( result.get_divisor()  == 3L )
+        assert( result.get_dividend() == -8 )
+        assert( result.get_divisor()  == 3 )
         # assert that arguments still untouched
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
-        assert( secondVal.get_dividend() == -1L )
-        assert( secondVal.get_divisor() == 2L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
+        assert( secondVal.get_dividend() == -1 )
+        assert( secondVal.get_divisor() == 2 )
         
         # division of integer
         result = firstVal / -3
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == -4L )
-        assert( result.get_divisor()  == 9L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_dividend() == -4 )
+        assert( result.get_divisor()  == 9 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # division of long
-        result = firstVal / -3L
+        result = firstVal / -3
         assert( isinstance( result, arithmetic.RationalNumber ) )
-        assert( result.get_dividend() == -4L )
-        assert( result.get_divisor()  == 9L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_dividend() == -4 )
+        assert( result.get_divisor()  == 9 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # division of float
         result = firstVal / -3.0
         assert( isinstance( result, float ) )
         assert( result + 4.0/9.0 < 1e-5 )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # division of complex
         result = firstVal / complex( -3.0, 2.0 )
         assert( isinstance( result, complex ) )
         assert( abs( result.real + 4.0/13.0 ) < 1e-5 and 
                 abs( result.imag + 8.0/39.0 ) < 1e-5 )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # test for divide by zero
         error = 0
@@ -614,17 +615,17 @@ class TestArithmetic( unittest.TestCase ):
         firstVal = arithmetic.RationalNumber( 4, 3 )   # 1/1/3
         result   = -firstVal
         assert( result.get_dividend() == -4 )
-        assert( result.get_divisor() == 3L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_divisor() == 3 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # test with zero
         firstVal = arithmetic.RationalNumber( 0, 3 )   # 1/1/3
         result   = -firstVal
-        assert( result.get_dividend() == 0L )
-        assert( firstVal.get_divisor() == 1L )
-        assert( firstVal.get_dividend() == 0L )
-        assert( firstVal.get_divisor() == 1L )
+        assert( result.get_dividend() == 0 )
+        assert( firstVal.get_divisor() == 1 )
+        assert( firstVal.get_dividend() == 0 )
+        assert( firstVal.get_divisor() == 1 )
         
     def test_pos( self ):
         """! @brief Test cloning instances of the Type arithmetic.RationalNumber.
@@ -632,18 +633,18 @@ class TestArithmetic( unittest.TestCase ):
         """
         firstVal = arithmetic.RationalNumber( 4, 3 )   # 1/1/3
         result   = +firstVal
-        assert( result.get_dividend() == 4L )
-        assert( result.get_divisor() == 3L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_dividend() == 4 )
+        assert( result.get_divisor() == 3 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # test with zero
         firstVal = arithmetic.RationalNumber( 0, 3 )   # 1/1/3
         result   = +firstVal
-        assert( result.get_dividend() == 0L )
-        assert( firstVal.get_divisor() == 1L )
-        assert( firstVal.get_dividend() == 0L )
-        assert( firstVal.get_divisor() == 1L )
+        assert( result.get_dividend() == 0 )
+        assert( firstVal.get_divisor() == 1 )
+        assert( firstVal.get_dividend() == 0 )
+        assert( firstVal.get_divisor() == 1 )
         
     def test_abs( self ):
         """! @brief Test getting the absolute value of rational numbers.
@@ -653,16 +654,16 @@ class TestArithmetic( unittest.TestCase ):
         secondVal = arithmetic.RationalNumber( -4, 3 )   # 1/1/3
         
         result = abs( firstVal )
-        assert( result.get_dividend() == 4L )
-        assert( result.get_divisor() == 3L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_dividend() == 4 )
+        assert( result.get_divisor() == 3 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         result = abs( secondVal )
-        assert( result.get_dividend() == 4L )
-        assert( result.get_divisor() == 3L )
-        assert( secondVal.get_dividend() == -4L )
-        assert( secondVal.get_divisor() == 3L )
+        assert( result.get_dividend() == 4 )
+        assert( result.get_divisor() == 3 )
+        assert( secondVal.get_dividend() == -4 )
+        assert( secondVal.get_divisor() == 3 )
        
     def test_invert( self ):
         """! @brief Test inverting instances of the Type arithmetic.RationalNumber.
@@ -670,15 +671,15 @@ class TestArithmetic( unittest.TestCase ):
         """
         firstVal = arithmetic.RationalNumber( 4, 3 )   # 1/1/3
         result   = ~firstVal
-        assert( result.get_dividend() == 3L )
-        assert( result.get_divisor() == 4L )
-        assert( firstVal.get_dividend() == 4L )
-        assert( firstVal.get_divisor() == 3L )
+        assert( result.get_dividend() == 3 )
+        assert( result.get_divisor() == 4 )
+        assert( firstVal.get_dividend() == 4 )
+        assert( firstVal.get_divisor() == 3 )
         
         # test for divide by zero
         secondVal = arithmetic.RationalNumber( 0, 3 )   # 1/1/3
-        assert( secondVal.get_dividend() == 0L )
-        assert( secondVal.get_divisor() == 1L )
+        assert( secondVal.get_dividend() == 0 )
+        assert( secondVal.get_divisor() == 1 )
         error = 0
         try:
             result = ~secondVal
@@ -740,7 +741,7 @@ class TestArithmetic( unittest.TestCase ):
         assert( cmp( firstVal, firstVal ) == 0 )
         
         # test against long
-        secondVal = 1L # 1/2
+        secondVal = 1 # 1/2
         assert( firstVal != secondVal ) # __eq__
         assert( firstVal == arithmetic.RationalNumber( 4, 3 ) ) # __eq__
         assert( secondVal == arithmetic.RationalNumber( 1, 1 ) ) # __eq__
@@ -750,7 +751,7 @@ class TestArithmetic( unittest.TestCase ):
         assert( not ( firstVal <= secondVal ) ) # __le__
         assert( secondVal <= firstVal ) # __le__
         assert( firstVal <= arithmetic.RationalNumber( 4, 3 ) ) # __le__
-        assert( secondVal <= 1L ) # __le__
+        assert( secondVal <= 1 ) # __le__
         assert( not ( secondVal > firstVal ) ) # __gt__
         assert( firstVal > secondVal ) # __gt__
         assert( not ( secondVal >= firstVal ) ) # __gt__
@@ -775,7 +776,7 @@ class TestArithmetic( unittest.TestCase ):
                 < 1e-5 )
         assert( 2 + arithmetic.RationalNumber( 1, 2 ) == 
                 arithmetic.RationalNumber( 5, 2 ) )
-        assert( 2L + arithmetic.RationalNumber( 1, 2 ) == 
+        assert( 2 + arithmetic.RationalNumber( 1, 2 ) == 
                 arithmetic.RationalNumber( 5, 2 ) )
         assert( abs( complex( 2, 1 ) + arithmetic.RationalNumber( 1, 2 ) - 
                 complex( 5.0/2.0, 1 ) ) < 1e-5 )
@@ -784,7 +785,7 @@ class TestArithmetic( unittest.TestCase ):
                 < 1e-5 )
         assert( 2 - arithmetic.RationalNumber( 1, 2 ) == 
                 arithmetic.RationalNumber( 3, 2 ) )
-        assert( 2L - arithmetic.RationalNumber( 1, 2 ) == 
+        assert( 2 - arithmetic.RationalNumber( 1, 2 ) == 
                 arithmetic.RationalNumber( 3, 2 ) )
         assert( abs( complex( 2, 1 ) - arithmetic.RationalNumber( 1, 2 ) - 
                 complex( 3.0/2.0, 1 ) ) < 1e-5 )
@@ -792,7 +793,7 @@ class TestArithmetic( unittest.TestCase ):
         assert( abs( 2.0 * arithmetic.RationalNumber( 1, 2 ) - 1.0 ) < 1e-5 )
         assert( 2 * arithmetic.RationalNumber( 1, 2 ) == 
                 arithmetic.RationalNumber( 1, 1 ) )
-        assert( 2L * arithmetic.RationalNumber( 1, 2 ) == 
+        assert( 2 * arithmetic.RationalNumber( 1, 2 ) == 
                 arithmetic.RationalNumber( 1, 1 ) )
         assert( abs( complex( 2, 1 ) * arithmetic.RationalNumber( 1, 2 ) - 
                 complex( 1.0, 0.5 ) ) < 1e-5 )
@@ -800,7 +801,7 @@ class TestArithmetic( unittest.TestCase ):
         assert( abs( 2.0 / arithmetic.RationalNumber( 1, 2 ) - 4.0 ) < 1e-5 )
         assert( 2 / arithmetic.RationalNumber( 1, 2 ) == 
                 arithmetic.RationalNumber( 4, 1 ) )
-        assert( 2L / arithmetic.RationalNumber( 1, 2 ) == 
+        assert( 2 / arithmetic.RationalNumber( 1, 2 ) == 
                 arithmetic.RationalNumber( 4, 1 ) )
         assert( abs( complex( 2, 1 ) / arithmetic.RationalNumber( 1, 2 ) - 
                 complex( 4, 2 ) ) < 1e-5 )
@@ -814,7 +815,7 @@ class TestArithmetic( unittest.TestCase ):
         assert( isinstance( num, arithmetic.RationalNumber ) )
         assert( num == 1 )
         # test long
-        num = arithmetic.RationalNumber.value_of( 1L )
+        num = arithmetic.RationalNumber.value_of( 1 )
         assert( isinstance( num, arithmetic.RationalNumber ) )
         assert( num == 1 )
         # test float
@@ -1081,7 +1082,7 @@ class TestOperators( unittest.TestCase ):
         id = operators.IDENTITY
         # test conversion
         TestOperators.TEST_CONV( id, 1, 1, int )
-        TestOperators.TEST_CONV( id, 1L, 1L, long )
+        TestOperators.TEST_CONV( id, 1, 1, long )
         TestOperators.TEST_CONV( id, arithmetic.RationalNumber( 1, 2 ), 
                                 arithmetic.RationalNumber( 1, 2 ), 
                                 arithmetic.RationalNumber )
@@ -1409,7 +1410,7 @@ class TestQuantity( unittest.TestCase ):
         self.other    = quantities.Quantity( si.KILOGRAM * si.METER / 
                                              ( si.SECOND **2 ), 
                                    arithmetic.RationalNumber( 4, 1 ) )
-        self.incompat = quantities.Quantity( si.AMPERE, 10L )
+        self.incompat = quantities.Quantity( si.AMPERE, 10 )
         self.dimensionless = quantities.Quantity( units.ONE, 3)
     
     def test_init( self ):
@@ -2981,11 +2982,11 @@ class TestQuantity( unittest.TestCase ):
         assert( error )
         
         value = long( q1 )
-        assert( value == 10L )
+        assert( value == 10 )
         value = long( q2 )
-        assert( value == 1L )
+        assert( value == 1 )
         value = long( q3 )
-        assert( value == 0L )
+        assert( value == 0 )
         
         error = 0
         try:
@@ -3172,7 +3173,7 @@ class TestUncertaintyComponents( unittest.TestCase ):
         """
         # sanity tests
         assert( isinstance( component, ucomponents.UncertainComponent ) )
-        assert( operator.isNumberType( expectedValue ) )
+        assert( isinstance(expectedValue, numbers.Number) )
         # check for range violations
         if(sys.platform != 'win32'):
             assert( expectedValue != float( "NaN" ) )
@@ -3182,8 +3183,8 @@ class TestUncertaintyComponents( unittest.TestCase ):
             assert( expectedUncertainty != float( "Infinity" ) )
             assert( accuracy != float( "Infinity" ) )
         
-        assert( operator.isNumberType( expectedUncertainty ) )
-        assert( operator.isNumberType( accuracy ) )
+        assert( isinstance(expectedUncertainty, numbers.Number) )
+        assert( isinstance(accuracy, numbers.Number) )
         
         value       = component.get_value()
         uncertty = 0.0
@@ -3301,7 +3302,7 @@ class TestUncertaintyComponents( unittest.TestCase ):
         """! @brief Initialize this test instance.
               @param self
         """
-        self.inputLong = ucomponents.UncertainInput( 10L, 2L )
+        self.inputLong = ucomponents.UncertainInput( 10, 2 )
         self.inputFloat = ucomponents.UncertainInput( 20.0, 3.0 )
         self.inputRational = ucomponents.UncertainInput( 
                                         arithmetic.RationalNumber( 30, 1 ), 

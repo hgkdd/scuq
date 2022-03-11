@@ -120,7 +120,7 @@ RADIAN      = units.AlternateUnit( "rad", units.ONE )
 STERADIAN   = units.AlternateUnit( "sr", units.ONE )
 
 ## Unit instance to model the SI unit Herz.
-HERTZ       = units.AlternateUnit( "Hz", ~SECOND )
+HERTZ       = units.AlternateUnit( "Hz", SECOND**(-1))
 
 ## Unit instance to model the SI unit Newton.
 NEWTON      = units.AlternateUnit( "N", KILOGRAM * METER/( SECOND ** 2 ) )

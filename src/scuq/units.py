@@ -20,14 +20,15 @@
 # @{
 
 # standard module
-import operator
+#import operator
+import numbers
 
 # local modules
 import scuq.arithmetic as arithmetic
 import scuq.operators as operators
 import scuq.qexceptions as qexceptions
 
-class PhysicalModel:
+class PhysicalModel(object):
     """! @brief       This class models the abstract interface for physical models.
      
        This class provides an interface for defining physical models.
@@ -68,7 +69,7 @@ def get_default_model():
     return _UNITS_MANAGER.get_model()
     
     
-class Dimension:    
+class Dimension(object):    
     """! @brief       This class provides an interface to model physical dimensions.
      
        In order to distinguish between different dimensions, we add
@@ -191,7 +192,7 @@ class Dimension:
         """
         self._pseudoUnit = state
 
-class UnitsManager:
+class UnitsManager(object):
     """! @brief       This manages the alternate and base units as well as the physical 
        dimensions.
        @see AlternateUnit
@@ -249,7 +250,7 @@ class UnitsManager:
         #print unit.get_symbol(), repr(unit.get_symbol())
         #print self._unitsDictionary
         #print self._unitsDictionary.has_key( unit.get_symbol() )
-        return self._unitsDictionary.has_key( unit.get_symbol() )
+        return unit.get_symbol() in self._unitsDictionary
     
     def set_model( self, physicalModel ):
         """! @brief Set the global physical model to be used.
@@ -268,7 +269,7 @@ class UnitsManager:
         return self._physicalModel
         
 
-class Unit:
+class Unit(object):
     """! @brief       An abstract class to model physical units.
      
       This class provides an interface to model physical units.
@@ -362,7 +363,7 @@ class Unit:
               offset to the current unit.
               @see TransformedUnit
         """
-        assert( operator.isNumberType( other ) )
+        assert( isinstance(other, numbers.Number) )
         return self.__transformUnit( operators.AddOperator( other ) )
     
     def __sub__( self, other ):
@@ -389,7 +390,7 @@ class Unit:
               @see ONE
         """
         assert( isinstance( other, ProductUnit ) or 
-                operator.isNumberType( other ) )
+                isinstance(other, numbers.Number) )
         if( isinstance( other, Unit ) ):
             if( other == ONE ):
                 return self
@@ -414,11 +415,11 @@ class Unit:
             return self
         
         if( isinstance( other, int ) or isinstance( other, long )):
-            if( other == 1L ):
+            if( other == 1 ):
                 return self
-            if( other > 0L ):
+            if( other > 0 ):
                 return self.__mul__( self.__pow__( other-1 ) )
-            elif( other == 0L ):
+            elif( other == 0 ):
                 return ONE
             else:
                 return ONE.__div__( self.__pow__( -other ) )
@@ -447,9 +448,9 @@ class Unit:
         assert( isinstance( other, int ) or isinstance( other, long ) )
         value = long( other )
 
-        if( value > 0L ):
+        if( value > 0 ):
             return self.__rootInstance( self, value )
-        elif( value == 0L ):
+        elif( value == 0 ):
             raise ArithmeticError( "The root cannot be zero." )
         else:
             return ONE.__div__( self.root( -value ) )
@@ -476,7 +477,7 @@ class Unit:
               @see ProductUnit
               @see TransformedUnit
         """
-        assert( isinstance( other, Unit ) or operator.isNumberType( other ) )
+        assert( isinstance( other, Unit ) or isinstance(other, numbers.Number) )
         if( isinstance( other, Unit ) ):
             if( other == ONE ):
                 return self
@@ -608,7 +609,7 @@ class Unit:
                 raise qexceptions.ConversionException( unit, \
                                  " has has fractional exponent" )
             pow_ = self.get_unitPow( i )
-            if( pow_ < 0L ):
+            if( pow_ < 0 ):
                 pow_ = -pow_
                 op  = ~op
             
@@ -627,7 +628,7 @@ class Unit:
               @see ProductUnit
         """
         assert( isinstance( unit, Unit ) )
-        assert( operator.isNumberType( root ) )
+        assert( isinstance(root, numbers.Number) )
         newElts = []
         if( isinstance( unit, ProductUnit ) ):
             elts     = unit.__elements__
@@ -1062,7 +1063,7 @@ class CompoundUnit( DerivedUnit ):
         """
         self.__first__, self.__next__ = state
 
-class __ProductElement__:
+class __ProductElement__(object):
     """! @brief       A helper class for ProductUnit classes.
       This class helps to maintain the factors of a product unit.
       @note Instances of this class can be serialized using pickle.
@@ -1156,9 +1157,9 @@ class __ProductElement__:
               @param self
               @return A string describing this factor.
         """
-        if( self.__pow__ == 1L and self.__root__ == 1L ):
+        if( self.__pow__ == 1 and self.__root__ == 1 ):
             return str( self.__unit__ )
-        elif( self.__root__ == 1L ):
+        elif( self.__root__ == 1 ):
             return str( self.__unit__ )+"^("+str( self.__pow__ )+")"
         else:
             return str( self.__unit__ )+"^("+str( self.__pow__ )+"/" \
@@ -1268,7 +1269,7 @@ class ProductUnit( DerivedUnit ):
                 raise qexceptions.ConversionException( self, \
                     "Unit has rational exponent" )
             pow_ = item.get_pow()
-            if( pow_ < 0L ):
+            if( pow_ < 0 ):
                 pow_ = -pow_
                 operator = ~operator
             for _ in range( 0, pow_ ):
@@ -1407,7 +1408,7 @@ class ProductUnit( DerivedUnit ):
                continue
            
             # neutral element
-            if( elt.get_pow() == 0L ):
+            if( elt.get_pow() == 0 ):
                 continue
             
             # mark as processed
@@ -1436,7 +1437,7 @@ class ProductUnit( DerivedUnit ):
         # pass 2, remove all 0 powers
         self.__elements__ = []
         for elt in newElts:
-            if( elt.get_pow() != 0L ):
+            if( elt.get_pow() != 0 ):
                 self.__elements__ += [elt]
 
         
@@ -1677,10 +1678,10 @@ TIME        = Dimension( "t" )
 ## Predefined global dimension for the Electric Current.
 CURRENT     = Dimension( "I" )
 
-__unicode   = u"\u03b8"
-__char      = __unicode.encode( "UTF-8" )
+#__unicode   = u"\u03b8"
+#__char      = __unicode.encode( "UTF-8" )
 ## Predefined global dimension for the Temperature.
-TEMPERATURE = Dimension( __char )
+TEMPERATURE = Dimension( 'u"\N{Greek Small Letter Theta}"' )
 ## Predefined global dimension for the Amount of Substance.
 SUBSTANCE   = Dimension( "n" )
 ## Predefined global dimension for Luminous Intensity.

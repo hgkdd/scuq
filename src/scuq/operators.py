@@ -18,7 +18,8 @@
 
 # standard modules
 import numpy
-import operator
+#import operator
+import numbers
 import pickle
 
 # local modules
@@ -141,7 +142,7 @@ class _ExpOperator( UnitOperator ):
               @param self
               @param exponent the exponent.
         """
-        assert( operator.isNumberType( exponent ) )
+        assert( isinstance(exponent, numbers.Number) )
         self._exponent = exponent
         self._logExponent = numpy.log( exponent )
     
@@ -176,7 +177,7 @@ class _ExpOperator( UnitOperator ):
               @param value The value to convert.
               @return The converted value
         """
-        assert( operator.isNumberType( value ) )
+        assert( isinstance(value, numbers.Number) )
         return numpy.exp( self._logExponent * float( value ) )
     
     def get_exponent( self ):
@@ -233,7 +234,7 @@ class LogOperator( UnitOperator ):
               @param self
               @param base The base of the logarithm.
         """
-        assert( operator.isNumberType( base ) )
+        assert( isinstance(base, numbers.Number) )
         self._base = base
         self._logBase = numpy.log( base )
     
@@ -271,7 +272,7 @@ class LogOperator( UnitOperator ):
               @exception TypeError If the argument is a complex number.
               @return The converted value
         """
-        assert( operator.isNumberType( value ) )
+        assert( isinstance(value, numbers.Number) )
         return numpy.log( float( value ) )/self._logBase
     
     def get_base( self ):
@@ -353,7 +354,7 @@ class AddOperator( UnitOperator ):
               @param self
               @param offset The offset of this operator.
         """
-        assert( operator.isNumberType( offset ) )
+        assert( isinstance(offset, numbers.Number) )
         self._offset = offset
     
     def __mul__( self, otherOperator ):
@@ -410,7 +411,7 @@ class AddOperator( UnitOperator ):
               @param value The value to convert.
               @return The converted value
         """
-        assert( operator.isNumberType( value ) )
+        assert( isinstance(value, numbers.Number) )
         return value+self.get_offset()
     
     def get_offset( self ):
@@ -495,7 +496,7 @@ class MultiplyOperator( UnitOperator ):
               @param self
               @param factor The offset of this operator.
         """
-        assert( operator.isNumberType( factor ) )
+        assert( isinstance(factor, numbers.Number) )
         self._factor = factor
     
     
@@ -534,7 +535,7 @@ class MultiplyOperator( UnitOperator ):
         # Optimize for integer accuracy
         if( isinstance( self._factor, long ) or 
             isinstance( self._factor, int ) ):
-            return MultiplyOperator( arithmetic.RationalNumber( 1L, 
+            return MultiplyOperator( arithmetic.RationalNumber( 1, 
                                     self._factor ) )
         # Optimize rational factors
         if( isinstance( self._factor, arithmetic.RationalNumber ) ):
@@ -562,7 +563,7 @@ class MultiplyOperator( UnitOperator ):
               @param value The value to convert.
               @return The converted value.
         """
-        assert( operator.isNumberType( value ) )
+        assert( isinstance(value, numbers.Number) )
         newval = value * self._factor
         #if isinstance(value, quantities.Quantity):
         if hasattr(newval, '_unit'):

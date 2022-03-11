@@ -83,9 +83,10 @@
 # @{
 
 # standard module
-import operator
+#import operator
+import numbers
+import collections.abc
 import numpy
-
 # local modules
 import scuq.arithmetic as arithmetic
 import scuq.qexceptions as qexceptions
@@ -153,8 +154,8 @@ class Quantity:
                @see units.Dimensions
         """
         assert( isinstance( unit, units.Unit ) )
-        assert( operator.isNumberType( value ) or 
-                operator.isSequenceType( value ) or
+        assert( isinstance(value, numbers.Number) or 
+                isinstance(value, collections.abc.Sequence) or
                 isinstance( other, ucomponents.UncertainInput ) )
         # switched arguments !
         assert( not isinstance( value, units.Unit ) )
@@ -696,8 +697,8 @@ class Quantity:
         """
         if( isinstance( other, Quantity ) ):
             return other
-        assert( operator.isNumberType( other ) or 
-                operator.isSequenceType( other ) or
+        assert( isinstance(other, numbers.Number) or 
+                isinstande(other, collections.abs.Sequence) or
                 isinstance( other, ucomponents.UncertainInput ) )
         assert( not isinstance( other, units.Unit ) )
         

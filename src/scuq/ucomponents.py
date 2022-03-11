@@ -31,7 +31,8 @@
 
 # standard modules
 import numpy
-import operator
+#import operator
+import numbers
 
 # local modules
 import scuq.arithmetic as arithmetic
@@ -159,7 +160,7 @@ class UncertainComponent:
         
         # if a numeric input is given,
         # assume it is an uncertain input
-        assert( operator.isNumberType( value ) )
+        assert( isinstance(value, numbers.Number) )
             
         return UncertainInput( value, 0.0 )
     value_of = staticmethod( value_of )
@@ -178,8 +179,8 @@ class UncertainComponent:
         assert( not isinstance( sigma, UncertainComponent ) )
         assert( not isinstance( value, quantities.Quantity ) )
         assert( not isinstance( sigma, quantities.Quantity ) )
-        assert( operator.isNumberType( value ) )
-        assert( operator.isNumberType( sigma ) )
+        assert(  isinstance(value, numbers.Number) )
+        assert(  isinstance(signa, numbers.Number) )
             
         return UncertainInput( value, sigma, dof )
     gaussian = staticmethod( gaussian )
@@ -199,8 +200,8 @@ class UncertainComponent:
         assert( not isinstance( halfwitdh, UncertainComponent ) )
         assert( not isinstance( value, quantities.Quantity ) )
         assert( not isinstance( halfwitdh, quantities.Quantity ) )
-        assert( operator.isNumberType( value ) )
-        assert( operator.isNumberType( halfwitdh ) )
+        assert(  isinstance(value, numbers.Number) )
+        assert(  isinstance(halfwidth, numbers.Number) )
         
         uncertainty = halfwitdh / numpy.sqrt( 3.0 )
             
@@ -222,8 +223,8 @@ class UncertainComponent:
         assert( not isinstance( halfwitdh, UncertainComponent ) )
         assert( not isinstance( value, quantities.Quantity ) )
         assert( not isinstance( halfwitdh, quantities.Quantity ) )
-        assert( operator.isNumberType( value ) )
-        assert( operator.isNumberType( halfwitdh ) )
+        assert(  isinstance(value, numbers.Number) )
+        assert(  isinstance(halfwidth, numbers.Number) )
         
         uncertainty = halfwitdh / numpy.sqrt( 6.0 )
             
@@ -247,9 +248,9 @@ class UncertainComponent:
         assert( not isinstance( p, quantities.Quantity ) )
         assert( not isinstance( value, quantities.Quantity ) )
         assert( not isinstance( q, quantities.Quantity ) )
-        assert( operator.isNumberType( p ) )
-        assert( operator.isNumberType( value ) )
-        assert( operator.isNumberType( q ) )
+        assert(  isinstance(p, numbers.Number) )
+        assert(  isinstance(value, numbers.Number) )
+        assert(  isinstance(q, numbers.Number) )
         
         uncertainty = numpy.sqrt( p * q / ( ( p+q )**2.0*( p + q + 1.0 ) ) )
             
@@ -264,7 +265,8 @@ class UncertainComponent:
         """
         assert( not isinstance( value, UncertainComponent ) )
         assert( not isinstance( value, quantities.Quantity ) )
-        assert( operator.isNumberType( value ) )
+        assert(  isinstance(value, numbers.Number) )
+
             
         return UncertainComponent.beta( value, 0.5, 0.5, dof )
     arcsine = staticmethod( arcsine )
@@ -775,10 +777,10 @@ class UncertainInput( UncertainComponent ):
         assert( not isinstance( uncertainty, quantities.Quantity ) )
         assert( not isinstance( dof, UncertainComponent ) )
         assert( not isinstance( dof, quantities.Quantity ) )
-        
-        assert( operator.isNumberType( value ) )
-        assert( operator.isNumberType( uncertainty ) )
-        assert( operator.isNumberType( dof ) or dof == arithmetic.INFINITY )
+
+        assert( isinstance(value, numbers.Number) )
+        assert( isinstance(unvertainty, numbers.Number) )
+        assert( isinstance(dof, numbers.Number) or dof == arithmetic.INFINITY)
         
         self._value = value
         self._uncertainty = uncertainty
