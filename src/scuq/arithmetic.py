@@ -23,6 +23,14 @@ import operator
 import numbers
 import numpy
 
+
+def Coerce(x, y):
+    try:
+        t = type(x + y)
+        return (t(x), t(y))
+    except TypeError:
+        raise NotImplementedError
+
 def gcd( m, n ):
     """! @brief Calculate the greatest common divisor.
       @param n First integer value (greater or equal to zero).
@@ -112,8 +120,8 @@ class RationalNumber:
             self._dividend = - self._dividend
             self._divisor  = - self._divisor
         mygcd = gcd( abs( self._dividend ), self._divisor )
-        self._dividend = self._dividend / mygcd
-        self._divisor  = self._divisor / mygcd
+        self._dividend = self._dividend // mygcd
+        self._divisor  = self._divisor // mygcd
         
     ### The following methods are used to emulate the
     ### numeric behaviour.
@@ -132,14 +140,8 @@ class RationalNumber:
               @param self
               @return An integer.    
         """
-        return int( self._dividend )/int( self._divisor )
+        return int( self._dividend )//int( self._divisor )
     
-    def __long__( self ):
-        """! @brief Cast this rational number to a long integer.
-              @param self
-              @return An integer. 
-        """
-        return self._dividend / self._divisor
     
     def __float__( self ):
         """! @brief Cast this rational number to a floating point number.
@@ -155,13 +157,20 @@ class RationalNumber:
               @param value The number to add.
               @return The sum of this instance and the argument.
         """
-        assert( isinstance( value, RationalNumber ) )
-        
-        selfDividend  = self._dividend * value._divisor
-        otherDividend = value._dividend * self._divisor
-        newDivisor    = self._divisor * value._divisor
-        return RationalNumber( selfDividend + otherDividend, \
-                               newDivisor )
+        if not isinstance( value, (RationalNumber, numbers.Number) ):
+            return value.__radd__(self)
+        assert( isinstance( value, (RationalNumber, numbers.Number) ))
+        if isinstance(value, RationalNumber):
+            selfDividend  = self._dividend * value._divisor
+            otherDividend = value._dividend * self._divisor
+            newDivisor    = self._divisor * value._divisor
+            return RationalNumber( selfDividend + otherDividend, newDivisor )
+        #elif isinstance(value, ucomponents.UncertainComponent):
+        #    return value.__add__(self)
+        elif isinstance(value, int):
+            return RationalNumber( self._dividend + value*self._divisor, self._divisor )
+        else:
+            return float(self)+value
     
     def __sub__( self, value ):
         """! @brief Substract a number and return the result.
@@ -169,13 +178,22 @@ class RationalNumber:
               @param value The number to substract.
               @return The difference of this instance and the argument.
         """
-        assert( isinstance( value, RationalNumber ) )
-        
-        selfDividend  = self._dividend * value._divisor
-        otherDividend = value._dividend * self._divisor
-        newDivisor    = self._divisor * value._divisor
-        return RationalNumber( selfDividend - otherDividend, \
-                                  newDivisor )
+        if not isinstance( value, (RationalNumber, numbers.Number) ):
+            return value.__rsub__(self)
+        assert( isinstance( value, (RationalNumber, numbers.Number)))#,ucomponents.UncertainComponent) ))
+        if isinstance(value, RationalNumber):
+            selfDividend  = self._dividend * value._divisor
+            otherDividend = value._dividend * self._divisor
+            newDivisor    = self._divisor * value._divisor
+            return RationalNumber( selfDividend - otherDividend, newDivisor )
+        #elif isinstance(value, ucomponents.UncertainComponent): #self-value = -value+self
+        #    v=-value
+        #    return v.__add__(self)
+        elif isinstance(value, int):
+            return RationalNumber( self._dividend - value*self._divisor, self._divisor )
+        else:
+            return float(self)-value
+
     
     def __mul__( self, value ):
         """! @brief Multiply a number and return the result.
@@ -183,11 +201,17 @@ class RationalNumber:
               @param value The number to multiply.
               @return The product of this instance and the argument.
         """
-        assert( isinstance( value, RationalNumber ) )
-        
-        newDividend   = self._dividend * value._dividend
-        newDivisor    = self._divisor * value._divisor
-        return RationalNumber( newDividend, newDivisor )
+        if not isinstance( value, (RationalNumber, numbers.Number) ):
+            return value.__rmul__(self)
+        assert( isinstance( value, (RationalNumber, numbers.Number) ) )
+        if (isinstance(value, RationalNumber)):
+            newDividend   = self._dividend * value._dividend
+            newDivisor    = self._divisor * value._divisor
+            return RationalNumber( newDividend, newDivisor )
+        elif (isinstance(value, int)):
+            return RationalNumber( self._dividend*value, self._divisor )
+        else:
+            return float(self)*value
     
     def __pow__( self, value ):
         """! @brief Raise this rational number to the given power and return
@@ -199,8 +223,10 @@ class RationalNumber:
               @param value A numeric value representing the power.
               @return A new rational number representing power of this instance.
         """
-        assert( isinstance( value, RationalNumber ) )
-        if( value.is_integer() ):
+        if not isinstance( value, (RationalNumber, numbers.Number) ):
+            return value.__rpow__(self)
+        assert( isinstance( value, (RationalNumber, numbers.Number) ) )
+        if( not isinstance(value, float) and (isinstance(value, int) or value.is_integer()) ):
             if( value < 0 ):
                 return pow( ~self, -value )
             else:
@@ -218,26 +244,39 @@ class RationalNumber:
               @param value A value to be raised to the power.
               @return A new rational number representing power of this instance.
         """
-        assert(isinstance(value, RationalNumber))
+        assert(isinstance(value, (RationalNumber, numbers.Number)))
         if( self.is_integer() ):
             return value ** int( self )
         else:
             return value ** float( self )
     
-    def __div__( self, value ):
+    def __truediv__( self, value ):
         """! @brief Divide by another number and return the result.
               @param self
               @param value A number.
               @return The fraction of this instance and the number.
         """
-        assert( isinstance( value, RationalNumber ) )
+        if not isinstance( value, (RationalNumber, numbers.Number) ):
+            return value.__rtruediv__(self)
+        assert( isinstance( value, (RationalNumber, numbers.Number) ) )
+        if (isinstance(value, RationalNumber)):
+            if( value._dividend == 0 ):
+                raise ArithmeticError( "Divide by zero" )
 
-        if( value._dividend == 0 ):
-            raise ArithmeticError( "Divide by zero" )
+            newDividend   = self._dividend * value._divisor
+            newDivisor    = self._divisor * value._dividend
+            return RationalNumber( newDividend, newDivisor )
+        elif isinstance(value, int):
+            if( value == 0 ):
+                raise ArithmeticError( "Divide by zero" )
 
-        newDividend   = self._dividend * value._divisor
-        newDivisor    = self._divisor * value._dividend
-        return RationalNumber( newDividend, newDivisor )
+            newDividend   = self._dividend
+            newDivisor    = self._divisor * value
+            return RationalNumber( newDividend, newDivisor )
+        else:
+            return float(self) / value
+            
+            
     
     def __neg__( self ):
         """! @brief This method returns the negative of this instance.
@@ -290,15 +329,14 @@ class RationalNumber:
               @param value The value to compare to.
               @return If this rational number is equal to the argument.
         """
-        if(not isinstance(value, RationalNumber)):
-            try:
-                s,v = coerce(self, value)
-                return s == v
-            except NotImplementedError:
-                return False
-        
-        return self._divisor == value._divisor \
-           and self._dividend == value._dividend
+        if (isinstance(value, RationalNumber)):
+            return self._divisor == value._divisor and self._dividend == value._dividend
+        elif (isinstance(value, int)):
+            return self._divisor == 1 and self._dividend == value
+        elif (isinstance(value, numbers.Number)):
+            return (float(self) == value)
+        else:
+            return False
 
     def __lt__( self, value ):
         """! @brief Checks if this instance is less than another number.
@@ -306,9 +344,9 @@ class RationalNumber:
               @param value The value to compare to.
               @return True, if this rational number is less than the argument.
         """
-        assert( isinstance(value, numbers.Number) )
+        assert( isinstance(value, (numbers.Number, RationalNumber)) )
         
-        if( isinstance( value, int ) or isinstance( value, int ) ):
+        if( isinstance( value, int )):
             return self._dividend < self._divisor * int( value )
         if( isinstance( value, RationalNumber ) ):
             return self._dividend * value._divisor < \
@@ -322,14 +360,16 @@ class RationalNumber:
               @param value The value to compare to.
               @return True, if this rational number unequal to the argument.
         """
-        assert( isinstance(value, numbers.Number) )
-        if( isinstance( value, int ) or isinstance( value, int ) ):
+        if value == None:
+            return True
+        assert( isinstance(value, (numbers.Number, RationalNumber)) )
+        
+        if( isinstance( value, int )):
            return self._divisor != 1 or self._dividend != value
         if( isinstance( value, RationalNumber ) ):
-           return self._divisor != value._divisor or \
-                  self._dividend != value._dividend
+            return self._divisor != value._divisor or self._dividend != value._dividend
         # something else
-        return value != float( self )
+        return float( self ) != value
 
     def __gt__( self, value ):
         """! @brief Checks if this instance is greater than another number.
@@ -337,13 +377,12 @@ class RationalNumber:
               @param value The value to compare to.
               @return True, if this rational number is greater than the argument.
         """
-        assert( isinstance(value, numbers.Number) )
+        assert( isinstance(value, (numbers.Number, RationalNumber)) )
         
-        if( isinstance( value, int ) or isinstance( value, int ) ):
-            return self._dividend > self._divisor * int( value )
+        if( isinstance( value, int )):
+            return self._dividend > self._divisor * value
         if( isinstance( value, RationalNumber ) ):
-            return self._dividend * value._divisor > \
-                   value._dividend * self._divisor
+            return self._dividend * value._divisor > value._dividend * self._divisor
         # something else
         return float( self ) > value
 
@@ -397,23 +436,32 @@ class RationalNumber:
               @param value A value to left from this instance. 
         """
         # since this operation is symmetric
-        return self.__add__( value )
+        if (isinstance(value, (RationalNumber, int))):
+            return self.__add__( value )
+        else:
+            return float(self)+value
     
     def __rsub__( self, value ):
         """! @brief Right substraction of a numeric value.
               @param self
               @param value A value to left from this instance. 
         """
-        return ( -self ).__add__( value )
+        if (isinstance(value, (RationalNumber, int))):
+            return ( -self ).__add__( value )
+        else:
+            return value - float(self)
     
     def __rmul__( self, value ):
         """! @brief Right multiplication of a numeric value.
               @param self
               @param value A value to left from this instance. 
         """
-        return self.__mul__( value )
+        if (isinstance (value, (RationalNumber, int))):
+            return self.__mul__( value )
+        else:
+            return float(self)*value
     
-    def __rdiv__( self, value ):
+    def __rtruediv__( self, value ):
         """! @brief Right division of a numeric value.
               @param self
               @param value A value to left from this instance. 
@@ -438,16 +486,14 @@ class RationalNumber:
     def value_of( number ):
         """! @brief Factory for generating Rationalnumbers.
               @param number a numeric value (not float nor complex)
-              @exception TypeError If the argument is not int, long, or
+              @exception TypeError If the argument is not int or
                          a RationalNumber.
         """
         # no conversion needed
         if( isinstance( number, RationalNumber ) ):
             return number
-        if( isinstance( number, int ) ):
-            return RationalNumber( number )
-        if( isinstance( number, int ) ):
-            return RationalNumber( number )
+        if isinstance(number, int) or (isinstance(number, float) and number.is_integer()):
+            return RationalNumber( int(number) )
         raise TypeError( "Illegal Argument" )
     value_of = staticmethod( value_of )
     
@@ -668,11 +714,6 @@ class RationalNumber:
               @return The binary logarithm of this number.
               @note This number will be converted to float. 
         """
-        if(not isinstance(other, RationalNumber)):
-            tmp,other = coerce(self,other)
-            return numpy.arctan2(tmp, other)
-        
-        assert(isinstance(other, RationalNumber))
         numpy.arctan2(float(self),float(other))
         
     def hypot( self, other ):
@@ -684,7 +725,7 @@ class RationalNumber:
               @note This number will be converted to float. 
         """
         if(not isinstance(other, RationalNumber)):
-            tmp,other = coerce(self,other)
+            tmp,other = self.coerce(other)
             return numpy.hypot(tmp, other)
         return numpy.sqrt(self*self + other*other)
     
@@ -710,21 +751,18 @@ class RationalNumber:
         """
         return float( self )
     
-    def __coerce__(self, other):
+    def coerce(self, other):
         """! @brief Implementation of coercion rules.
         \see Coercion - The page describing the coercion rules."""
         # A x A
         if(isinstance(other, RationalNumber)):
             return (self,other)
-        elif(isinstance(other, int)):
-            return (self,RationalNumber.value_of(other))
-        # A x long -> A x A
-        elif(isinstance(other, int)):
-            return (self, RationalNumber.value_of(other))
+        elif isinstance(other, int) or other.is_integer():
+            return (self,RationalNumber.value_of(int(other)))
         # fall back to float
         else:
             ret = float(self)
-            return coerce(ret, other)
+            return Coerce(ret, other)
     
 ## \brief Global constant for infinity that is used in combination with the 
 # degrees of freedom evaluation.

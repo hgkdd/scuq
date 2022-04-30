@@ -17,7 +17,7 @@
 # \addtogroup qexceptions 
 # @{
 
-class QuantitiesException( Exception ):
+class QuantitiesException( BaseException ):
     """! @brief       General class for qexceptions of this module.
     """
     
@@ -27,7 +27,7 @@ class QuantitiesException( Exception ):
                @param self
                @param args Arguments of this exception
         """
-        Exception.__init__( self, *args )
+        BaseException.__init__( self, *args )
 
 class UnitExistsException( QuantitiesException ):
     """! @brief       Exception that is raised when a dimension, base unit, or

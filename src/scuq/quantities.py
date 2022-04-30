@@ -90,6 +90,8 @@ import numpy
 # local modules
 import scuq.arithmetic as arithmetic
 import scuq.qexceptions as qexceptions
+import scuq.ucomponents as ucomponents
+import scuq.cucomponents as cucomponents
 #import scuq.si as si
 import scuq.units as units
 
@@ -106,7 +108,7 @@ def is_strict():
 
 class Quantity:
     """! @brief       Base class that provides an interface to model quantities.
-      @note The numeric types (i.e. int, float, long, complex, and 
+      @note The numeric types (i.e. int, float,complex, and 
             arithmetic.RationalNumber) are
             automatically transformed to an dimensionless quantity if
             the operations are performed on them. This also applies if
@@ -154,9 +156,15 @@ class Quantity:
                @see units.Dimensions
         """
         assert( isinstance( unit, units.Unit ) )
-        assert( isinstance(value, numbers.Number) or 
-                isinstance(value, collections.abc.Sequence) or
-                isinstance( other, ucomponents.UncertainInput ) )
+        #print ("***** ",type(value)," *****")
+        assert( isinstance(value, (numbers.Number,
+                                       numpy.ndarray,
+                                       collections.abc.Sequence,
+                                       ucomponents.UncertainComponent,
+                                       cucomponents.CUncertainComponent,
+                                       cucomponents.Context,
+                                       arithmetic.RationalNumber) ))
+        
         # switched arguments !
         assert( not isinstance( value, units.Unit ) )
         assert( not isinstance( value, Quantity ) )
@@ -198,11 +206,20 @@ class Quantity:
         return self._unit
     
     def is_dimensionless( self ):
-        """! @brief Check if this quantity is dimensionless.
+        """! @brief Check if this quantity copatible to dimensionless.
               @param self
               @return True, if the unit assigned is comparable to units.ONE.
         """
         return self._unit.is_compatible( units.ONE )
+
+    def is_dimensionless_strict( self ):
+        """! @brief Check if this quantity is dimensionless (strict).
+              @param self
+              @return True, if the unit assigned IS units.ONE.
+        """
+        return Quantity._unitComparsion( self._unit, units.ONE )
+
+
     
     #emulate numeric behaviour
     
@@ -215,13 +232,20 @@ class Quantity:
               @exception qexceptions.ConversionException If the units are not
                          comparable.
         """
-        assert(isinstance(other, Quantity))
-        # check if the units are comparable
-        if( not Quantity._unitComparsion( self._unit, other._unit ) ):
-            raise qexceptions.ConversionException( other._unit, 
-                "is not compatible to "+str( self._unit ) )
-        # get the other quantity in this unit
-        result = self._value + other.get_value( self._unit )
+        if isinstance(other, numbers.Number):
+            if self.is_dimensionless_strict():
+                result = self._value + other
+            else:
+                raise qexceptions.ConversionException( self._unit, 
+                    "is not compatible to dimensionless")
+        else:
+            assert(isinstance(other, Quantity))
+            # check if the units are comparable
+            if( not Quantity._unitComparsion( self._unit, other._unit ) ):
+                raise qexceptions.ConversionException( other._unit, 
+                    "is not compatible to "+str( self._unit ) )
+            # get the other quantity in this unit
+            result = self._value + other.get_value( self._unit )
         return Quantity( self._unit, result )
     
     def __sub__( self, other ):
@@ -246,9 +270,13 @@ class Quantity:
               @return A new instance of Quantity representing the product of
                       both quantities.
         """
-        assert(isinstance(other, Quantity))
-        newUnit  = self._unit * other._unit
-        newValue = self._value * other._value
+        assert(isinstance(other, (Quantity, numbers.Number)))
+        if isinstance(other, numbers.Number):            
+            newUnit  = self._unit
+            newValue = self._value * other
+        else:
+            newUnit  = self._unit * other._unit
+            newValue = self._value * other._value
         return Quantity( newUnit, newValue )
     
     def __pow__( self, other ):
@@ -262,20 +290,22 @@ class Quantity:
                          is not dimensionless.
               @see units.Unit.__pow__
         """
-        assert(isinstance(other, Quantity))
-        if( not Quantity._unitComparsion( other.get_default_unit(), 
-            units.ONE ) ):
-            raise qexceptions.ConversionException( self._unit, 
-                "The argument is not comparable to a dimensionless "
-                +"quantity "
-                +str( other._unit ) )
-        other   = other._value 
-        
-        newValue = self._value ** other
-        newUnit  = self._unit ** other
+        assert(isinstance(other, (Quantity,numbers.Number)))
+        if isinstance(other, numbers.Number):            
+            newUnit  = self._unit**other
+            newValue = self._value ** other
+        else:
+            if( not Quantity._unitComparsion( other.get_default_unit(), 
+                                                  units.ONE ) ):
+                raise qexceptions.ConversionException( self._unit, 
+                                                           "The argument is not comparable to a dimensionless "
+                                                           +"quantity "
+                                                           +str( other._unit ) )
+            newValue = self._value ** other._value
+            newUnit  = self._unit ** other._value
         return Quantity( newUnit, newValue )
     
-    def __div__( self, other ):
+    def __truediv__( self, other ):
         """! @brief Get the fraction of another instance of Quantity and this instance.
               @attention This method performs no conversion of alternate units: 
                     Even if the units are defined in the same dimension. For example,
@@ -287,13 +317,15 @@ class Quantity:
               @return A new instance of Quantity representing the sum of
                       both quantities.
         """
-        assert(isinstance(other, Quantity))
-        newUnit  = self._unit / other._unit
-        newValue = self._value / other._value
+        assert(isinstance(other, (Quantity, numbers.Number)))
+        if isinstance(other, numbers.Number):            
+            newUnit  = self._unit
+            newValue = self._value / other
+        else:
+            newUnit  = self._unit / other._unit
+            newValue = self._value / other._value
         return Quantity( newUnit, newValue )
     
-    def __truediv__( self, other ):
-        return self.__div__(other)
     
     def __radd__( self, other ):
         """! @brief Get the sum of this instance of Quantity and another value.
@@ -316,15 +348,9 @@ class Quantity:
               @exception qexceptions.ConversionException If the units are not
                          comparable.
         """
-        # convert to a dimensionless type
-        assert(isinstance(other, Quantity))
-        # check if the units are comparable
-        if( not Quantity._unitComparsion( self._unit, other._unit) ):
-            raise qexceptions.ConversionException( other._unit, 
-                "is not compatible to "+str( self._unit ) )
-        # get the other quantity in this unit
-        result = other.get_value( self._unit ) - self._value
-        return Quantity( self._unit, result )
+        # other - self = -self+other
+        v = -1*self
+        return v.__add__(other)
     
     def __rmul__( self, other ):
         """! @brief Get the product of this instance of Quantity and another value.
@@ -334,12 +360,16 @@ class Quantity:
               @return A new instance of Quantity representing the product of
                       both quantities.
         """
-        assert(isinstance(other, Quantity))
-        newValue = other._value * self._value
-        newUnit  = other._unit * self._unit
+        assert(isinstance(other, (Quantity, numbers.Number)))
+        if isinstance(other, numbers.Number):
+            newValue = other * self._value
+            newUnit  = self._unit
+        else:    
+            newValue = other._value * self._value
+            newUnit  = other._unit * self._unit
         return Quantity( newUnit, newValue )
     
-    def __rdiv__( self, other ):
+    def __rtruediv__( self, other ):
         """! @brief Get the fraction of another value and this instance.
               @param self The divisor.
               @param other Another instance of Quantity or numeric value used as 
@@ -347,9 +377,13 @@ class Quantity:
               @return A new instance of Quantity representing the sum of
                       both quantities.
         """
-        assert(isinstance( other, Quantity ) )
-        newValue = other._value / self._value
-        newUnit  = other._unit / self._unit
+        assert(isinstance( other, (Quantity,numbers.Number) ) )
+        if isinstance(other, numbers.Number):
+            newValue = other / self._value
+            newUnit  = units.ONE / self._unit
+        else:    
+            newValue = other._value / self._value
+            newUnit  = other._unit / self._unit
         return Quantity( newUnit, newValue )
     
     def __rpow__( self, other ):
@@ -363,7 +397,7 @@ class Quantity:
               @exception qexceptions.ConversionException If this unit is not
                          comparable to units.ONE.
         """
-        assert(isinstance(other, Quantity))
+        assert(isinstance(other, (Quantity, numbers.Number)))
         if( not Quantity._unitComparsion( self._unit, units.ONE) ):
             raise qexceptions.ConversionException( self, 
                                                   "this unit is not"+
@@ -377,11 +411,17 @@ class Quantity:
               @exception qexceptions.ConversionException If the units are not
                          comparable.
         """
-        assert(isinstance(other, Quantity))
-        result = self + other
-        # assign the values
-        self._unit  = result._unit
-        self._value = result._value
+        if isinstance(other, numbers.Number):
+            if self.is_dimensionless_strict():
+                self._value += other
+            else:
+                raise qexceptions.ConversionException(self._unit)
+        else:
+            assert(isinstance(other, Quantity))
+            result = self + other # may throw exception
+            # assign the values
+            self._unit  = result._unit
+            self._value = result._value
         return self
     
     def __isub__( self, other ):
@@ -391,23 +431,29 @@ class Quantity:
               @exception qexceptions.ConversionException If the units are not
                          comparable.
         """
-        assert(isinstance(other, Quantity))
-        result = self - other
-        # assign the values
-        self._unit  = result._unit
-        self._value = result._value
+        if isinstance(other, numbers.Number):
+            if self.is_dimensionless_strict():
+                self._value -= other
+            else:
+                raise qexceptions.ConversionException(self._unit)
+        else:
+            assert(isinstance(other, Quantity))
+            result = self - other # may throw exception
+            # assign the values
+            self._unit  = result._unit
+            self._value = result._value
         return self
-    
+
     def __imul__( self, other ):
         """! @brief Multiply this instance with the argument.
               @param self
               @param other Another instance of Quantity or numeric value.
         """
-        assert(isinstance(other, Quantity))
-        result = self * other
+        assert(isinstance(other, (Quantity, numbers.Number)))
+        result = self * other 
         # assign the values
-        self._unit    = result._unit
-        self._value   = result._value
+        self._unit  = result._unit
+        self._value = result._value
         return self
     
     def __idiv__( self, other ):
@@ -415,11 +461,11 @@ class Quantity:
               @param self
               @param other Another instance of Quantity or numeric value..
         """
-        assert(isinstance(other, Quantity))
-        result = self / other
+        assert(isinstance(other, (Quantity, numbers.Number)))
+        result = self / other 
         # assign the values
-        self._unit    = result._unit
-        self._value   = result._value
+        self._unit  = result._unit
+        self._value = result._value
         return self
     
     def __ipow__( self, other ):
@@ -427,7 +473,7 @@ class Quantity:
               @param self
               @param other Another instance of Quantity or numeric value.
         """
-        assert(isinstance(other, Quantity))
+        assert(isinstance(other, (Quantity, numbers.Number)))
         result = self ** other
         # assign the values
         self._unit    = result._unit
@@ -543,7 +589,7 @@ class Quantity:
                          comparable.
         """
         if(not isinstance(other, Quantity)):
-            a,b = coerce(self,other)
+            a,b = self._coerce(other)
             return a < b
         if( not Quantity._unitComparsion( self._unit, other._unit) ):
             raise qexceptions.ConversionException( self, 
@@ -562,7 +608,7 @@ class Quantity:
                          comparable.
         """
         if(not isinstance(other, Quantity)):
-            a,b = coerce(self,other)
+            a,b = self._coerce(other)
             return a <= b
         if( not Quantity._unitComparsion( self._unit, other._unit ) ):
             raise qexceptions.ConversionException( self, 
@@ -580,7 +626,7 @@ class Quantity:
         """
         if(not isinstance(other, Quantity)):
             try:
-                a,b = coerce(self,other)
+                a,b = self._coerce(other)
                 return a == b
             except NotImplementedError:
                 return False
@@ -597,7 +643,7 @@ class Quantity:
               @return True, if this instance is not equal to the argument.
         """
         if(not isinstance(other, Quantity)):
-            a,b = coerce(self,other)
+            a,b = self._coerce(other)
             return a != b
         if( not Quantity._unitComparsion( self._unit, other._unit ) ):
             return True
@@ -614,7 +660,7 @@ class Quantity:
                          comparable.
         """
         if(not isinstance(other, Quantity)):
-            a,b = coerce(self,other)
+            a,b = self._coerce(other)
             return a > b
         if( not Quantity._unitComparsion( self._unit, other._unit ) ):
             raise qexceptions.ConversionException( self, 
@@ -633,7 +679,7 @@ class Quantity:
                          comparable.
         """
         if(not isinstance(other, Quantity)):
-            a,b = coerce(self,other)
+            a,b = self._coerce(other)
             return a >= b
         if( not Quantity._unitComparsion( self._unit, other._unit ) ):
             raise qexceptions.ConversionException( self, 
@@ -653,7 +699,7 @@ class Quantity:
                          comparable.
         """
         if(not isinstance(other, Quantity)):
-            a,b = coerce(self,other)
+            a,b = self._coerce(other)
             return cmp(a,b)
         if( not Quantity._unitComparsion( self._unit, other._unit ) ):
             raise qexceptions.ConversionException( self, 
@@ -698,8 +744,9 @@ class Quantity:
         if( isinstance( other, Quantity ) ):
             return other
         assert( isinstance(other, numbers.Number) or 
-                isinstande(other, collections.abs.Sequence) or
-                isinstance( other, ucomponents.UncertainInput ) )
+                isinstance(other, collections.abc.Sequence) or
+                isinstance( other, ucomponents.UncertainInput )  or
+                isinstance(other, arithmetic.RationalNumber))
         assert( not isinstance( other, units.Unit ) )
         
         # Create a dimensionless quantity having the 
@@ -730,7 +777,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.arccos( self._value )
 
@@ -745,7 +792,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.arccosh( self._value )
 
@@ -760,7 +807,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.arcsin( self._value )
 
@@ -775,7 +822,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.arcsinh( self._value )
 
@@ -790,7 +837,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.arctan( self._value )
 
@@ -805,7 +852,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.arctanh( self._value )
 
@@ -820,7 +867,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.cos( self._value )
 
@@ -835,7 +882,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.cosh( self._value )
 
@@ -850,7 +897,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.tan( self._value )
 
@@ -865,7 +912,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.tanh( self._value )
 
@@ -880,7 +927,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.log10( self._value )
 
@@ -895,7 +942,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.log2( self._value )
 
@@ -910,7 +957,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.sin( self._value )
 
@@ -925,7 +972,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.sinh( self._value )
 
@@ -970,24 +1017,30 @@ class Quantity:
 
         return Quantity( self._unit, value )
     
-    def floor( self ):
+    def __floor__( self ):
         """! @brief This method provides the broadcast interface for
               numpy.floor.
               @param self
               @return The largest integer less than or equal to this quantity.
         """
-        value = numpy.floor( self._value )
+        try:
+            value=self._value.__floor__()
+        except AttributeError:
+            value = numpy.floor( self._value )
 
         return Quantity( self._unit, value )
     
-    def ceil( self ):
+    def __ceil__( self ):
         """! @brief This method provides the broadcast interface for
               numpy.ceil.
               @param self
               @return The largest integer greater than or equal to this 
                       quantity.
         """
-        value = numpy.ceil( self._value )
+        try:
+            value=self._value.__ceil__()
+        except AttributeError:
+            value = numpy.ceil( self._value )
 
         return Quantity( self._unit, value )
     
@@ -1000,7 +1053,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
 
         value = numpy.exp( self._value )
 
@@ -1015,7 +1068,7 @@ class Quantity:
                          If the unit assigned is not dimensionless.
         """
         if( not self.is_dimensionless() ):
-            raise qexceptions
+            raise qexceptions.NotDimensionlessException(self._unit)
                     
         value = numpy.log( self._value )
 
@@ -1030,27 +1083,28 @@ class Quantity:
               @exception qexceptions.NotDimensionlessException 
                          If the unit assigned is not dimensionless.
         """
-        if(not isinstance(other, Quantity)):
-            tmp,other = coerce(self,other)
-            return numpy.arctan2(tmp, other)
-        assert(isinstance(other, Quantity))
-        if( not (self.is_dimensionless() or other.is_dimensionless())):
-            raise qexceptions
-        
-        other_val = other.get_value(other.get_default_unit())
-        value = numpy.arctan2( self._value, other_val )
-
-        return Quantity( units.ONE, value )
+        if isinstance(other, numbers.Number):
+            if self.is_dimensionless():
+                value = numpy.arctan2(float(self._value), other)
+                return Quantity( units.ONE, value )
+            else:
+                raise qexceptions.NotDimensionlessException(self._unit)
+        elif isinstance(other, Quantity):
+            other_val=other.get_val(self.get_default_unit()) # may raise a qexceptions.ConversionException
+            return Quantity( units.ONE, numpy.arctan2(float(self._value), float(other_val)) )
+        else:
+            raise NotImplementedError
+            
     
     def hypot(self, other):
         """! @brief This method provides the broadcast interface for
-              numpy.arctan2.
+              hypothenusis.
               @param self
               @param other Another instance of Quantity.
               @return The hypothenusis of the arguments.
         """
         if(not isinstance(other, Quantity)):
-            tmp,other = coerce(self,other)
+            tmp,other = self._coerce(other)
             return numpy.hypot(tmp, other)
         assert(isinstance(other, Quantity))
         return numpy.sqrt(self*self + other*other)
@@ -1061,7 +1115,10 @@ class Quantity:
               @param self
               @return This quantity.
         """
-        value = numpy.conjugate( self._value )
+        try:
+            value = self._value.conjugate()
+        except AttributeError:
+            value = numpy.conjugate( self._value )
 
         return Quantity( self._unit, value )
     
@@ -1085,18 +1142,17 @@ class Quantity:
         return Quantity._STRICT
     is_strict = staticmethod(is_strict)
     
-    def __coerce__(self, other):
+    def _coerce(self, other):
         """! @brief Implementation of coercion rules.
         \see Coercion - The page describing the coercion rules."""
         if(isinstance(other, Quantity)):
             return (self, other)
         elif(isinstance(other, int) or
-             isinstance(other, int) or
              isinstance(other, float) or
              isinstance(other, complex) or
              isinstance(other, arithmetic.RationalNumber)):
             other = Quantity.value_of(other)
-            return (self,other)
+            return (self, other)
         elif(isinstance(other, numpy.ndarray)):
             if(other.dtype == Quantity):
                 raise NotImplementedError("Cannot encapsulate ndarrays of"

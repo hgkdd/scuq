@@ -120,10 +120,10 @@ RADIAN      = units.AlternateUnit( "rad", units.ONE )
 STERADIAN   = units.AlternateUnit( "sr", units.ONE )
 
 ## Unit instance to model the SI unit Herz.
-HERTZ       = units.AlternateUnit( "Hz", SECOND**(-1))
+HERTZ       = units.AlternateUnit( "Hz", ~SECOND)
 
 ## Unit instance to model the SI unit Newton.
-NEWTON      = units.AlternateUnit( "N", KILOGRAM * METER/( SECOND ** 2 ) )
+NEWTON      = units.AlternateUnit( "N", KILOGRAM * METER / ( SECOND ** 2 ) )
 
 ## Unit instance to model the SI unit Pascal.
 PASCAL      = units.AlternateUnit( "Pa", NEWTON / ( METER ** 2 ) )
@@ -145,7 +145,7 @@ FARAD       = units.AlternateUnit( "F", COULOMB / VOLT )
 
 ## Unit instance to model the SI unit Ohm.
 # \note The <tt>UTF-8</tt> encoded string stands for \f$\Omega\f$.  HGK: changed to Ohm
-OHM         = units.AlternateUnit( "Ohm",                         # ( u"\u03A9" ).encode( "UTF-8" ), 
+OHM         = units.AlternateUnit( 'u"\N{Greek Capital Letter Omega}"',                         # ( u"\u03A9" ).encode( "UTF-8" ), 
                                    VOLT / AMPERE )
 
 ## Unit instance to model the SI unit Siemens.

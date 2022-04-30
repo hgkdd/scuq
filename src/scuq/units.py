@@ -127,7 +127,7 @@ class Dimension(object):
         assert( isinstance( other, Dimension ) )
         return Dimension( self._pseudoUnit * other._pseudoUnit )
     
-    def __div__( self, other ):
+    def __truediv__( self, other ):
         """! @brief Return a dimension that describes the fraction of the current and 
                another dimension.
               @param self
@@ -135,7 +135,7 @@ class Dimension(object):
               @return A new dimension representing the fraction.
         """
         assert( isinstance( other, Dimension ) )
-        return Dimension( self._pseudoUnit / other._pseudoUnit )
+        return Dimension( self._pseudoUnit // other._pseudoUnit )
     
     def __pow__( self, value ):
         """! @brief Return a dimension that represents the current dimension 
@@ -144,7 +144,7 @@ class Dimension(object):
               @param value An integer to be used as power.
               @return A new dimension representing the power.
         """
-        assert( isinstance( value, int ) or isinstance( value, int ) )
+        assert( isinstance( value, int ))
         value = int( value )
         
         return Dimension( self._pseudoUnit ** value )
@@ -389,8 +389,7 @@ class Unit(object):
               @see ProductUnit
               @see ONE
         """
-        assert( isinstance( other, ProductUnit ) or 
-                isinstance(other, numbers.Number) )
+        assert( isinstance( other, Unit ) or isinstance(other, numbers.Number) )
         if( isinstance( other, Unit ) ):
             if( other == ONE ):
                 return self
@@ -414,7 +413,7 @@ class Unit(object):
         if( self == ONE or other == ONE ):
             return self
         
-        if( isinstance( other, int ) or isinstance( other, int )):
+        if( isinstance( other, int )):
             if( other == 1 ):
                 return self
             if( other > 0 ):
@@ -422,7 +421,7 @@ class Unit(object):
             elif( other == 0 ):
                 return ONE
             else:
-                return ONE.__div__( self.__pow__( -other ) )
+                return ONE.__truediv__( self.__pow__( -other ) )
         
         if( isinstance( other, arithmetic.RationalNumber ) ):
             power = other.get_dividend()
@@ -453,7 +452,7 @@ class Unit(object):
         elif( value == 0 ):
             raise ArithmeticError( "The root cannot be zero." )
         else:
-            return ONE.__div__( self.root( -value ) )
+            return ONE.__truediv__( self.root( -value ) )
         
     def sqrt( self ):
         """! @brief Support of square root.
@@ -466,7 +465,7 @@ class Unit(object):
         """
         return self.root( 2 )
         
-    def __div__( self, other ):
+    def __truediv__( self, other ):
         """! @brief Support for dividing units and numeric values.
               This function returns a new Unit that represents the operation.
               @param self
@@ -494,7 +493,7 @@ class Unit(object):
               @return A new unit representing the operation.
               @see ProductUnit
         """
-        unit =  ONE / self
+        unit =  ONE.__truediv__(self)
         return unit
     
     def compound( self, other ):
@@ -1075,19 +1074,19 @@ class __ProductElement__(object):
     ## The root of the current factor.
     __root__ = None
     
-    def __init__( self, unit, pow, root ):
+    def __init__( self, unit, power, root ):
         """! @brief Default constructor.
               @param self
               @param unit The unit of the factor to create.
-              @param pow The power assigned to this factor.
+              @param power The power assigned to this factor.
               @param root The root assigned to this factor.
         """
         assert( isinstance( unit, Unit ) )
-        assert( isinstance( pow, int ) or isinstance( pow, int ) )
-        assert( isinstance( root, int ) or isinstance( root, int ) )
+        assert( isinstance( power, int ) )
+        assert( isinstance( root, int ) )
         
         self.__unit__ = unit
-        self.__pow__  = int( pow )
+        self.__pow__  = int( power )
         self.__root__ = int( root )
     
     def get_unit( self ):
@@ -1102,14 +1101,14 @@ class __ProductElement__(object):
               @param self
               @return The power of this factor.
         """
-        return self.__pow__
+        return int(self.__pow__)
 
     def get_root( self ):
         """! @brief Get the root of this factor.
               @param self
               @return The root of this factor.    
         """
-        return self.__root__
+        return int(self.__root__)
     
     def __eq__( self, other ):
         """! @brief This method checks two factors for equality.
@@ -1130,7 +1129,7 @@ class __ProductElement__(object):
               @param self
               @param value An interget to be used as new power.
         """
-        assert( isinstance( value, int ) or isinstance( value, int ) )
+        assert( isinstance( value, int ) )
         
         self.__pow__ = int( value )
 
@@ -1148,8 +1147,8 @@ class __ProductElement__(object):
               @param self
         """
         divisor = arithmetic.gcd( abs( self.__pow__ ), self.__root__ )
-        self.__pow__ /= divisor
-        self.__root__ /= divisor
+        self.__pow__ //= divisor
+        self.__root__ //= divisor
         
     def __str__( self ):
         """! @brief Print this factor.
@@ -1365,14 +1364,14 @@ class ProductUnit( DerivedUnit ):
         # no break occured -> match
         return True
     
-    def __div__( self, other ):
+    def __truediv__( self, other ):
         """! @brief Divide two units.
               @param self
               @param other A divisor.
-              @see Unit.__div__
+              @see Unit.__truediv__
         """
         if( not isinstance(other, Unit) ):
-            return Unit.__div__(self, other)
+            return Unit.__truediv__(self, other)
 					
         elements = self.__cloneElements()
         if( isinstance( other, ProductUnit ) ):
@@ -1552,7 +1551,7 @@ class TransformedUnit( DerivedUnit ):
      
        For example feet can be derived from meter.
       @see Unit.__mul__
-      @see Unit.__div__
+      @see Unit.__truediv__
       @see Unit.__add__
       @see Unit.__sub__
       @note Instances of this class can be serialized using pickle.
@@ -1658,7 +1657,7 @@ class TransformedUnit( DerivedUnit ):
 # (i.e. BaseUnits). We will show this here by transforming
 # a SI base unit.
 # \see units.Unit.__add__
-# \see units.Unit.__div__
+# \see units.Unit.__truediv__
 # \see units.Unit.__mul__
 # \see units.TransformedUnit
 # \example TransformedUnits.py

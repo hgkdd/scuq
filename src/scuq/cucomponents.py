@@ -268,7 +268,7 @@ class CUncertainComponent :
         @return The product of this instance and the other instance."""
         return Mul(self, y)
     
-    def __div__(self, y):
+    def __truediv__(self, y):
         """! @brief Divide this instance by another instance.
         @param self
         @param y Another uncertain value.
@@ -306,7 +306,7 @@ class CUncertainComponent :
         assert(isinstance(other, CUncertainComponent))
         return Mul(y, self)
     
-    def __rdiv__(self, y):
+    def __rtruediv__(self, y):
         """! @brief Divide this instance by another instance.
         @param self
         @param y Another uncertain value.
@@ -490,7 +490,8 @@ class CUnaryOperation(CUncertainComponent):
         @param self
         @return A list containing the instances of CUncertainInput that this 
                  instance depends on."""
-        return [ u for u in self._sibling.depends_on() if u not in locals()['_[1]'] ]  #us.clearDuplicates(self._sibling.depends_on())
+        # return [ u for u in self._sibling.depends_on() if u not in locals()['_[1]'] ]  #us.clearDuplicates(self._sibling.depends_on())
+        return set([ u for u in self._sibling.depends_on()])  #us.clearDuplicates(self._sibling.depends_on())
 
 class CBinaryOperation(CUncertainComponent): 
     """! @brief This abstract class models a binary operation. """
@@ -521,7 +522,8 @@ class CBinaryOperation(CUncertainComponent):
         @param self
         @return A list containing the instances of CUncertainInput that this 
                 instance depends on."""
-        return [ u for u in self._left.depends_on()+self._right.depends_on() if u not in locals()['_[1]'] ] #us.clearDuplicates(self._left.depends_on()+self._right.depends_on())
+#        return [ u for u in self._left.depends_on()+self._right.depends_on() if u not in locals()['_[1]'] ] #us.clearDuplicates(self._left.depends_on()+self._right.depends_on())
+        return set(self._left.depends_on()).union(set(self._right.depends_on())) #us.clearDuplicates(self._left.depends_on()+self._right.depends_on())
 
 class Exp(CUnaryOperation) : 
     """! @brief @brief This class models the exponential function \f$e^x\f$.
@@ -1271,6 +1273,8 @@ class Context:
             c1 = q.Quantity.value_of(c)
             u1 = c1.get_default_unit()
             fc1 = c1.get_value(u1)
+            print (type(fc1))
+            print (isinstance(fc1, CUncertainComponent))
             return q.Quantity(u1*u1, self.uncertainty(fc1))
 
         inputs = c.depends_on()

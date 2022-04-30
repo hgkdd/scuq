@@ -160,7 +160,7 @@ class UncertainComponent:
         
         # if a numeric input is given,
         # assume it is an uncertain input
-        assert( isinstance(value, numbers.Number) )
+        assert( isinstance(value, (numbers.Number,arithmetic.RationalNumber)) )
             
         return UncertainInput( value, 0.0 )
     value_of = staticmethod( value_of )
@@ -180,12 +180,12 @@ class UncertainComponent:
         assert( not isinstance( value, quantities.Quantity ) )
         assert( not isinstance( sigma, quantities.Quantity ) )
         assert(  isinstance(value, numbers.Number) )
-        assert(  isinstance(signa, numbers.Number) )
+        assert(  isinstance(sigma, numbers.Number) )
             
         return UncertainInput( value, sigma, dof )
     gaussian = staticmethod( gaussian )
     
-    def uniform( value, halfwitdh, dof=arithmetic.INFINITY ):
+    def uniform( value, halfwidth, dof=arithmetic.INFINITY ):
         """! @brief A factory method, that can be used to create instances of
               uncertain components. This method returns uncertain inputs
               that are quantified as a uniform distribution, centered
@@ -197,18 +197,18 @@ class UncertainComponent:
                       @f$ u(x) = \frac{a}{\sqrt{3}} @f$.
         """
         assert( not isinstance( value, UncertainComponent ) )
-        assert( not isinstance( halfwitdh, UncertainComponent ) )
+        assert( not isinstance( halfwidth, UncertainComponent ) )
         assert( not isinstance( value, quantities.Quantity ) )
-        assert( not isinstance( halfwitdh, quantities.Quantity ) )
+        assert( not isinstance( halfwidth, quantities.Quantity ) )
         assert(  isinstance(value, numbers.Number) )
         assert(  isinstance(halfwidth, numbers.Number) )
         
-        uncertainty = halfwitdh / numpy.sqrt( 3.0 )
+        uncertainty = halfwidth / numpy.sqrt( 3.0 )
             
         return UncertainInput( value, uncertainty, dof )
     uniform = staticmethod( uniform )
     
-    def triangular( value, halfwitdh, dof=arithmetic.INFINITY ):
+    def triangular( value, halfwidth, dof=arithmetic.INFINITY ):
         """! @brief A factory method, that can be used to create instances of
               uncertain components. This method returns uncertain inputs
               that are quantified as a triangular distribution, centered
@@ -220,13 +220,13 @@ class UncertainComponent:
                       @f$ u(x) = \frac{a}{\sqrt{6}} @f$.
         """
         assert( not isinstance( value, UncertainComponent ) )
-        assert( not isinstance( halfwitdh, UncertainComponent ) )
+        assert( not isinstance( halfwidth, UncertainComponent ) )
         assert( not isinstance( value, quantities.Quantity ) )
-        assert( not isinstance( halfwitdh, quantities.Quantity ) )
+        assert( not isinstance( halfwidth, quantities.Quantity ) )
         assert(  isinstance(value, numbers.Number) )
         assert(  isinstance(halfwidth, numbers.Number) )
         
-        uncertainty = halfwitdh / numpy.sqrt( 6.0 )
+        uncertainty = halfwidth / numpy.sqrt( 6.0 )
             
         return UncertainInput( value, uncertainty, dof )
     triangular = staticmethod( triangular )
@@ -357,7 +357,7 @@ class UncertainComponent:
               @param other A numeric value.
               @see UncertainComponent.value_of
         """
-        assert(isinstance(other, UncertainComponent))
+        assert(isinstance(other, (UncertainComponent,numbers.Number,arithmetic.RationalNumber)))
         return Add( self, other )
     
     def arctan2( self, other ):
@@ -383,7 +383,8 @@ class UncertainComponent:
             tmp,other = coerce(self,other)
             return numpy.hypot(tmp,other)
         return numpy.sqrt(self*self + other*other)
-
+        
+    
     def __sub__( self, other ):
         """! @brief This method substracts the argument from this instance.
               @note If the argument is not an instance of UncertainComponent
@@ -392,8 +393,7 @@ class UncertainComponent:
               @param other A numeric value.
               @see UncertainComponent.value_of
         """
-        assert(isinstance(other, UncertainComponent))
-        assert(isinstance(other, UncertainComponent))
+        assert(isinstance(other, (UncertainComponent,numbers.Number,arithmetic.RationalNumber)))
         return Sub( self, other )
 
     def __mul__( self, other ):
@@ -404,10 +404,10 @@ class UncertainComponent:
               @param other A numeric value.
               @see UncertainComponent.value_of
         """
-        assert(isinstance(other, UncertainComponent))
+        assert(isinstance(other, (UncertainComponent,numbers.Number,arithmetic.RationalNumber)))
         return Mul( self, other ) 
 
-    def __div__( self, other ):
+    def __truediv__( self, other ):
         """! @brief This method divides this instance by the argument.
               @note If the argument is not an instance of UncertainComponent
                     it will be converted using UncertainComponent.value_of.
@@ -415,7 +415,7 @@ class UncertainComponent:
               @param other A numeric value.
               @see UncertainComponent.value_of
         """
-        assert(isinstance(other, UncertainComponent))
+        assert(isinstance(other, (UncertainComponent,numbers.Number,arithmetic.RationalNumber)))
         return Div( self, other ) 
     
     def __pow__( self, other ):
@@ -426,7 +426,7 @@ class UncertainComponent:
               @param other A numeric value.
               @see UncertainComponent.value_of
         """
-        assert(isinstance(other, UncertainComponent))
+        assert(isinstance(other, (UncertainComponent,numbers.Number,arithmetic.RationalNumber)))
         return Pow( self, other ) 
     
     def __radd__( self, other ):
@@ -437,7 +437,7 @@ class UncertainComponent:
               @param other A numeric value.
               @see UncertainComponent.value_of
         """
-        assert(isinstance(other, UncertainComponent))
+        assert(isinstance(other, (UncertainComponent,numbers.Number,arithmetic.RationalNumber)))
         return Add( other, self )
 
     def __rsub__( self, other ):
@@ -448,7 +448,7 @@ class UncertainComponent:
               @param other A numeric value.
               @see UncertainComponent.value_of
         """
-        assert(isinstance(other, UncertainComponent))
+        assert(isinstance(other, (UncertainComponent,numbers.Number,arithmetic.RationalNumber)))
         return Sub( other, self )
 
     def __rmul__( self, other ):
@@ -459,10 +459,10 @@ class UncertainComponent:
               @param other A numeric value.
               @see UncertainComponent.value_of
         """
-        assert(isinstance(other, UncertainComponent))
+        assert(isinstance(other, (UncertainComponent,numbers.Number,arithmetic.RationalNumber)))
         return Mul( other, self ) 
 
-    def __rdiv__( self, other ):
+    def __rtruediv__( self, other ):
         """! @brief              This method divides the argument by this instance.
               @note If the argument is not an instance of UncertainComponent
                     it will be converted using UncertainComponent.value_of.
@@ -470,7 +470,7 @@ class UncertainComponent:
               @param other A numeric value.
               @see UncertainComponent.value_of
         """
-        assert(isinstance(other, UncertainComponent))
+        assert(isinstance(other, (UncertainComponent,numbers.Number,arithmetic.RationalNumber)))
         return Div( other, self )
 
     def __rpow__( self, other ):
@@ -481,7 +481,7 @@ class UncertainComponent:
               @param other A numeric value.
               @see UncertainComponent.value_of
         """
-        assert(isinstance(other, UncertainComponent))
+        assert(isinstance(other, (UncertainComponent,numbers.Number,arithmetic.RationalNumber)))
         return Pow( other, self ) 
     
     def __neg__( self ):
@@ -778,8 +778,8 @@ class UncertainInput( UncertainComponent ):
         assert( not isinstance( dof, UncertainComponent ) )
         assert( not isinstance( dof, quantities.Quantity ) )
 
-        assert( isinstance(value, numbers.Number) )
-        assert( isinstance(unvertainty, numbers.Number) )
+        assert( isinstance(value, (numbers.Number,arithmetic.RationalNumber)) )
+        assert( isinstance(uncertainty, (numbers.Number,arithmetic.RationalNumber)) )
         assert( isinstance(dof, numbers.Number) or dof == arithmetic.INFINITY)
         
         self._value = value
@@ -800,6 +800,9 @@ class UncertainInput( UncertainComponent ):
               @return A numeric value or arithmetic.INFINITY, representing the value.
         """
         return self._dof
+
+    def conjugate(self):
+        return self._value
     
     def get_uncertainty( self, component ):
         """! @brief Returns the assigned uncertainty.
@@ -817,6 +820,13 @@ class UncertainInput( UncertainComponent ):
               @return A list of the components of uncertainty.
         """
         return [self]
+
+    def __ceil__(self):
+        return numpy.ceil(self._value+self._uncertainty)
+
+    def __floor__(self):
+        return numpy.ceil(self._value-self._uncertainty)
+
     
     def __getstate__( self ):
         """! @brief Serialization using pickle.
@@ -1220,6 +1230,7 @@ class Sub( BinaryOperation ):
         if( not isinstance( other, Sub ) ):
             return False
         return BinaryOperation.equal_debug( self, other )
+
     
 class Pow( BinaryOperation ):
     """! @brief       This class models GUM-tree nodes that raise the left silbling 

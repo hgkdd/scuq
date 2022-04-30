@@ -142,7 +142,7 @@ class _ExpOperator( UnitOperator ):
               @param self
               @param exponent the exponent.
         """
-        assert( isinstance(exponent, numbers.Number) )
+        assert( isinstance(exponent, (numbers.Number, arithmetic.RationalNumber)) )
         self._exponent = exponent
         self._logExponent = numpy.log( exponent )
     
@@ -177,7 +177,7 @@ class _ExpOperator( UnitOperator ):
               @param value The value to convert.
               @return The converted value
         """
-        assert( isinstance(value, numbers.Number) )
+        assert( isinstance(value, (numbers.Number, arithmetic.RationalNumber)) )
         return numpy.exp( self._logExponent * float( value ) )
     
     def get_exponent( self ):
@@ -234,7 +234,7 @@ class LogOperator( UnitOperator ):
               @param self
               @param base The base of the logarithm.
         """
-        assert( isinstance(base, numbers.Number) )
+        assert( isinstance(base, (numbers.Number, arithmetic.RationalNumber)) )
         self._base = base
         self._logBase = numpy.log( base )
     
@@ -272,7 +272,7 @@ class LogOperator( UnitOperator ):
               @exception TypeError If the argument is a complex number.
               @return The converted value
         """
-        assert( isinstance(value, numbers.Number) )
+        assert( isinstance(value, (numbers.Number, arithmetic.RationalNumber)) )
         return numpy.log( float( value ) )/self._logBase
     
     def get_base( self ):
@@ -354,7 +354,7 @@ class AddOperator( UnitOperator ):
               @param self
               @param offset The offset of this operator.
         """
-        assert( isinstance(offset, numbers.Number) )
+        assert( isinstance(offset, (numbers.Number, arithmetic.RationalNumber)) )
         self._offset = offset
     
     def __mul__( self, otherOperator ):
@@ -411,7 +411,7 @@ class AddOperator( UnitOperator ):
               @param value The value to convert.
               @return The converted value
         """
-        assert( isinstance(value, numbers.Number) )
+        assert( isinstance(value, (numbers.Number, arithmetic.RationalNumber)) )
         return value+self.get_offset()
     
     def get_offset( self ):
@@ -496,7 +496,7 @@ class MultiplyOperator( UnitOperator ):
               @param self
               @param factor The offset of this operator.
         """
-        assert( isinstance(factor, numbers.Number) )
+        assert( isinstance(factor, (numbers.Number, arithmetic.RationalNumber)) )
         self._factor = factor
     
     
@@ -563,7 +563,7 @@ class MultiplyOperator( UnitOperator ):
               @param value The value to convert.
               @return The converted value.
         """
-        assert( isinstance(value, numbers.Number) )
+        assert( isinstance(value, (numbers.Number, arithmetic.RationalNumber)) )
         newval = value * self._factor
         #if isinstance(value, quantities.Quantity):
         if hasattr(newval, '_unit'):
