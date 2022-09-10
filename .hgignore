@@ -15,3 +15,5 @@ scuq/__version__.py
 
 syntax: regexp
 .*\#.*\#$
+# Default ignored files
+.idea/workspace.xml

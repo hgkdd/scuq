@@ -937,7 +937,7 @@ class AlternateUnit( DerivedUnit ):
         """
         self.__symbol__, self.__parentUnit__ = state
         if( not _UNITS_MANAGER.existsUnit( self ) ):
-            raise UnknownUnitException( self, " is unknown, and can therefore"
+            raise qexceptions.UnknownUnitException( self, " is unknown, and can therefore"
                                            +" not be unpickled" )
     
 # Example for AlternateUnit

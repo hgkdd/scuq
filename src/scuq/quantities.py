@@ -698,6 +698,9 @@ class Quantity:
               @exception qexceptions.ConversionException If the units are not
                          comparable.
         """
+        def cmp(a, b):
+            return (a > b) - (a < b)
+
         if(not isinstance(other, Quantity)):
             a,b = self._coerce(other)
             return cmp(a,b)
