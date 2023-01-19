@@ -26,7 +26,7 @@ c.set_correlation(i,phi,matrix([[ -0.65, 0], [0, 0]]))
 
 # Report the uncertainty
 u_c = c.uncertainty(Z)
-print "u(Z) =\n", c.uncertainty(Z)
+print(("u(Z) =\n", c.uncertainty(Z)))
 # evaluate u(Re) and u(Im) explicitly
 
 unit = u_c.get_default_unit()
@@ -34,8 +34,8 @@ val = u_c.get_value(unit)
 u_r = quantities.Quantity(sqrt(unit),sqrt(val[0,0]))
 u_i = quantities.Quantity(sqrt(unit),sqrt(val[1,1]))
 
-print "u(R) = ",u_r
-print "u(I) = ",u_i
+print(("u(R) = ",u_r))
+print(("u(I) = ",u_i))
 
 
 assert(u_c.get_default_unit().is_compatible(si.OHM**2))

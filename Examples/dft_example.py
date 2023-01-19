@@ -3,7 +3,7 @@ from scuq import *
 
 # generate some data, of a measured quantity
 data = array([quantities.Quantity(si.VOLT, cos(50 * t)) \
-              for t in xrange(1000)])
+              for t in range(1000)])
 
 # the problem is, NumPy doesn't accept object
 # arguments for the fft module; therefore,

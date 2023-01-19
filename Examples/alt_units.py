@@ -12,5 +12,5 @@ u_paint_coverage = units.AlternateUnit("pc", si.METER ** 2
 # Define the unit m^{-1}
 u_inv_meter = ~si.METER
 
-print (u_paint_coverage == u_inv_meter)              # False
-print (u_paint_coverage.is_compatible(u_inv_meter))  # True
+print((u_paint_coverage == u_inv_meter))              # False
+print((u_paint_coverage.is_compatible(u_inv_meter)))  # True

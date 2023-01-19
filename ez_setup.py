@@ -55,8 +55,10 @@ md5_data = {
 }
 
 import sys, os
-try: from hashlib import md5
-except ImportError: from md5 import md5
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5
 
 def _validate_md5(egg_name, data):
     if egg_name in md5_data:

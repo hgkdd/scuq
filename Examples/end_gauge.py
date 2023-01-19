@@ -3,8 +3,8 @@ from scuq import *
 # Define the units as transformed units
 NANOMETER = si.METER/1e9
 CELSIUS   = si.KELVIN+273.15
-print "nm := ",NANOMETER
-print "C  := ",CELSIUS
+print("nm := ",NANOMETER)
+print("C  := ",CELSIUS)
 
 c = ucomponents.Context()
 
@@ -48,14 +48,14 @@ l = l_s + d + tmp_1 + tmp_2
 # Verify the model
 assert(l.get_default_unit() == NANOMETER)
 
-print "u(alpha_s)\t\t\t= ",c.uncertainty(alpha_s)
-print "u(delta_alpha)\t\t\t= ",c.uncertainty(delta_alpha)
-print "u(theta)\t\t\t= ",c.uncertainty(theta)
-print "u(-l_s * delta_alpha * theta)\t= ", \
-	c.uncertainty(tmp_1)
-print "u(l_s * alpha_s * delta_theta)\t= ", \
-	c.uncertainty(tmp_2)
+print("u(alpha_s)\t\t\t= ",c.uncertainty(alpha_s))
+print("u(delta_alpha)\t\t\t= ",c.uncertainty(delta_alpha))
+print("u(theta)\t\t\t= ",c.uncertainty(theta))
+print("u(-l_s * delta_alpha * theta)\t= ", \
+	c.uncertainty(tmp_1))
+print("u(l_s * alpha_s * delta_theta)\t= ", \
+	c.uncertainty(tmp_2))
 quantities.set_strict(False) # Enable conversion of units
-print "u(l)\t\t\t\t= ", \
-	c.uncertainty(l).get_value(si.METER),si.METER
-print "dof(l)\t\t\t\t= ",c.dof(l)
+print("u(l)\t\t\t\t= ", \
+	c.uncertainty(l).get_value(si.METER),si.METER)
+print("dof(l)\t\t\t\t= ",c.dof(l))
