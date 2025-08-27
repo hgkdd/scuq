@@ -363,9 +363,3 @@
 ## The modules contained within the quantities package.
 __all__ = ["arithmetic", "units", "qexceptions", "si", "quantities", "operators", "ucomponents", "cucomponents"]
 
-version='unknown'
-try:
-    import __version__
-    version=__version__.version
-except ImportError:
-    pass
