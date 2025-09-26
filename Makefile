@@ -13,7 +13,7 @@
 ## test:   Run self-tests on the library
 
 # Files that are deleted by invoking clean
-TMP_FILES=doc.log scuq/*.pyc scuq/*.pyo doc/html doc/latex Examples/*.pyc \
+TMP_FILES=doc.log src/scuq/*.pyc src/scuq/*.pyo doc/html doc/latex Examples/*.pyc \
 	  Examples/*.pyo *.log
 
 # Files and directories that are important for backups
@@ -21,9 +21,9 @@ IMP_FILES=doc doc.cfg Examples scuq make_latex.sh \
 	  Makefile AUTHORS
 
 # The souce files 
-SOURCES=scuq/arithmetic.py scuq/cucomponents.py scuq/__init__.py \
-	scuq/operators.py scuq/qexceptions.py scuq/quantities.py \
-	scuq/si.py scuq/testcases.py scuq/units.py 
+SOURCES=src/scuq/arithmetic.py src/scuq/cucomponents.py src/scuq/__init__.py \
+	src/scuq/operators.py src/scuq/qexceptions.py src/scuq/quantities.py \
+	src/scuq/si.py src/scuq/testcases.py src/scuq/units.py
 
 all: doc test
 
@@ -40,6 +40,8 @@ doc/latex/refman.pdf: doc/html/index.html
 
 doc: doc/html/index.html doc/latex/refman.pdf
 
+html: doc/html/index.html
+
 ## Backups
 
 backup: clean
@@ -50,7 +52,7 @@ dist: clean
 	tar cvjf `date +"%Y%m%d"`_dist.tar.bz2 $(SOURCES)
 	
 test: $(SOURCES)
-	python scuq/testcases.py
+	python src/scuq/testcases.py
 
 	
 #strip_cvs:
