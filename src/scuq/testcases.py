@@ -5608,13 +5608,13 @@ class TestGUMTree( unittest.TestCase ):
 # initialize tests
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    suite.addTest( unittest.makeSuite( TestSIUnits ) )
-    suite.addTest( unittest.makeSuite( TestArithmetic ) )
-    suite.addTest( unittest.makeSuite( TestOperators ) )
-    suite.addTest( unittest.makeSuite( TestQuantity ) )
-    suite.addTest( unittest.makeSuite( TestUncertaintyComponents ) )
-    suite.addTest( unittest.makeSuite( TestGUMTree ) )
-    suite.addTest( unittest.makeSuite( 
+    suite.addTest( unittest.defaultTestLoader.loadTestsFromTestCase( TestSIUnits ) )
+    suite.addTest( unittest.defaultTestLoader.loadTestsFromTestCase( TestArithmetic ) )
+    suite.addTest( unittest.defaultTestLoader.loadTestsFromTestCase( TestOperators ) )
+    suite.addTest( unittest.defaultTestLoader.loadTestsFromTestCase( TestQuantity ) )
+    suite.addTest( unittest.defaultTestLoader.loadTestsFromTestCase( TestUncertaintyComponents ) )
+    suite.addTest( unittest.defaultTestLoader.loadTestsFromTestCase( TestGUMTree ) )
+    suite.addTest( unittest.defaultTestLoader.loadTestsFromTestCase(
                    TestComplexUncertaintyComponents) )
     unittest.TextTestRunner( verbosity=2 ).run( suite )
 
