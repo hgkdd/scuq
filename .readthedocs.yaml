@@ -11,5 +11,6 @@ build:
     pre_build:
     # Note that this HTML won't be automatically uploaded,
     # unless your documentation build includes it somehow.
-      - pwd
-      - doxygen doc/doc.cfg
+      - mkdir -p $READTHEDOCS_OUTPUT/html
+      - doxygen doc/readthedocs.cfg
+      - exit 0
