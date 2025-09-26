@@ -11,4 +11,5 @@ build:
     pre_build:
     # Note that this HTML won't be automatically uploaded,
     # unless your documentation build includes it somehow.
+      - pwd
       - doxygen doc/doc.cfg
