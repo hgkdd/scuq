@@ -1,7 +1,7 @@
 version: 2
 sphinx:
   # Path to your Sphinx configuration file.
-  configuration: docs/conf.py
+  configuration: doc/conf.py
 
 build:
   os: "ubuntu-24.04"
@@ -11,4 +11,4 @@ build:
     pre_build:
     # Note that this HTML won't be automatically uploaded,
     # unless your documentation build includes it somehow.
-      - doxygen doc.cfg
+      - doxygen doc/doc.cfg
