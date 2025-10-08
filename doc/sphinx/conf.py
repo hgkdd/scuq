@@ -27,5 +27,11 @@ html_theme = 'alabaster'
 html_static_path = ['_static']
 html_extra_path = ['../html']
 
-import subprocess
-subprocess.call('cd .. ; doxygen doc.cfg', shell=True)
+import subprocess, os
+
+read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
+
+if read_the_docs_build:
+    subprocess.call('cd ..; doxygen readthedocs.cfg', shell=True)
+#import subprocess
+#subprocess.call('cd .. ; doxygen doc.cfg', shell=True)
